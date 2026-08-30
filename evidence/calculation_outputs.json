@@ -1,0 +1,210 @@
+{
+  "scope": "One numerical lineage only; no global-area reassessment.",
+  "source_files": {
+    "ye_table_s4_csv": {
+      "path": "data/ye_osf_extracted/ye_osf_table_04.csv",
+      "sha256": "c97111f778a3e12965432077d263b4aea2fe2c3c9c09a62f17b289af2f85a66a"
+    },
+    "ye_table_s7_csv": {
+      "path": "data/ye_osf_extracted/ye_osf_table_06.csv",
+      "sha256": "8f17a898f36d9d7749e36b21b87f47cd6930c50d9bc996b4f844f2fb763d08ac"
+    }
+  },
+  "ye_mature_feoc_reconstruction": {
+    "current_study_table_s4": {
+      "n": 14,
+      "values_percent": [
+        "0.11",
+        "0.09",
+        "0.07",
+        "0.13",
+        "0.11",
+        "0.13",
+        "0.15",
+        "0.13",
+        "0.11",
+        "0.13",
+        "0.09",
+        "0.11",
+        "0.09",
+        "0.07"
+      ],
+      "sum_percent": "1.52",
+      "mean_percent": "0.1085714285714285714285714286",
+      "sample_sd_percent": "0.0241333292858151"
+    },
+    "historical_table_s7": {
+      "n": 8,
+      "values_percent": [
+        "0.24",
+        "0.22",
+        "0.13",
+        "0.28",
+        "0.19",
+        "0.11",
+        "0.21",
+        "0.18"
+      ],
+      "sum_percent": "1.56",
+      "mean_percent": "0.195",
+      "sample_sd_percent": "0.055805785670356"
+    },
+    "combined": {
+      "n": 22,
+      "values_percent": [
+        "0.11",
+        "0.09",
+        "0.07",
+        "0.13",
+        "0.11",
+        "0.13",
+        "0.15",
+        "0.13",
+        "0.11",
+        "0.13",
+        "0.09",
+        "0.11",
+        "0.09",
+        "0.07",
+        "0.24",
+        "0.22",
+        "0.13",
+        "0.28",
+        "0.19",
+        "0.11",
+        "0.21",
+        "0.18"
+      ],
+      "sum_percent": "3.08",
+      "mean_percent": "0.14",
+      "sample_sd_percent": "0.0566526593332017"
+    },
+    "all_seep_cross_check": {
+      "n": 43,
+      "values_percent": [
+        "0.27",
+        "0.22",
+        "0.19",
+        "0.19",
+        "0.19",
+        "0.14",
+        "0.12",
+        "0.18",
+        "0.15",
+        "0.17",
+        "0.22",
+        "0.15",
+        "0.16",
+        "0.14",
+        "0.15",
+        "0.14",
+        "0.18",
+        "0.13",
+        "0.08",
+        "0.12",
+        "0.16",
+        "0.11",
+        "0.09",
+        "0.07",
+        "0.13",
+        "0.11",
+        "0.13",
+        "0.15",
+        "0.13",
+        "0.11",
+        "0.13",
+        "0.09",
+        "0.11",
+        "0.09",
+        "0.07",
+        "0.24",
+        "0.22",
+        "0.13",
+        "0.28",
+        "0.19",
+        "0.11",
+        "0.21",
+        "0.18"
+      ],
+      "sum_percent": "6.53",
+      "mean_percent": "0.1518604651162790697674418605",
+      "sample_sd_percent": "0.0507681852923044"
+    },
+    "reported_rounding_check": {
+      "current_mean_sd_percent_2dp": "0.11 +/- 0.02",
+      "combined_mean_sd_percent_2dp": "0.14 +/- 0.06",
+      "all_seep_mean_sd_percent_2dp": "0.15 +/- 0.05"
+    }
+  },
+  "area_arithmetic": {
+    "continental_slope_area_km2": "41000000",
+    "occupation_percent": "0.05",
+    "occupation_fraction": "0.0005",
+    "product_km2": "20500.0000",
+    "scientific_notation": "2.05e4 km2",
+    "jiang_published_lower_km2": "205000",
+    "published_to_arithmetic_ratio": "1E+1",
+    "inputs_required_to_generate_published_lower": {
+      "occupation_percent_if_area_stays_41_million_km2": "0.500",
+      "slope_area_km2_if_occupation_stays_0.05_percent": "4.1000E+8",
+      "unreported_multiplier": "1E+1"
+    },
+    "unit_round_trips_for_correct_product": {
+      "square_metres": "20500000000.0000",
+      "hectares": "2050000.0000",
+      "square_nautical_miles": "5976.843666761518689735922638"
+    }
+  },
+  "ye_stock_reconstruction": {
+    "identity": "stock_Tg = area_km2 * depth_m * dry_bulk_density_g_cm3 * FeOC_percent / 100",
+    "explicit_or_data_reconstructed_inputs": {
+      "published_lower_area_km2": "205000",
+      "published_upper_area_km2": "315000",
+      "depth_m": "0.30",
+      "combined_mature_FeOC_percent": "0.14"
+    },
+    "implicit_input_not_located_in_article_si_or_osf": {
+      "dry_bulk_density_g_cm3": "1.65",
+      "basis": "simple two-decimal value that recovers both published whole-Tg endpoints from the explicit/data-derived inputs"
+    },
+    "computed": {
+      "reconstruction_with_implicit_1p65_lower_Tg": "142.065000",
+      "reconstruction_with_implicit_1p65_lower_rounded_Tg": "142",
+      "reconstruction_with_implicit_1p65_upper_Tg": "218.295000",
+      "reconstruction_with_implicit_1p65_upper_rounded_Tg": "218",
+      "corrected_reconstruction_with_implicit_1p65_lower_Tg": "14.206500",
+      "corrected_reconstruction_with_implicit_1p65_lower_1dp_Tg": "14.2",
+      "lower_stock_ratio_published_to_corrected": "10"
+    },
+    "density_implied_by_rounded_endpoints_separately": {
+      "from_142_Tg": "1.649245063879210220673635308",
+      "from_218_Tg": "1.647770219198790627362055933"
+    },
+    "density_intervals_that_round_to_each_endpoint": {
+      "from_142_Tg_lower_inclusive_upper_exclusive": [
+        "1.643437862950058072009291521",
+        "1.655052264808362369337979094"
+      ],
+      "from_218_Tg_lower_inclusive_upper_exclusive": [
+        "1.643990929705215419501133787",
+        "1.651549508692365835222978080"
+      ],
+      "joint_interval_lower_inclusive_upper_exclusive": [
+        "1.643990929705215419501133787",
+        "1.651549508692365835222978080"
+      ],
+      "implicit_1.65_is_inside_joint_interval": true
+    },
+    "density_free_area_linear_rounding_audit": {
+      "joint_area_coefficient_Tg_per_km2_lower_inclusive_upper_exclusive": [
+        "0.0006904761904761904761904761905",
+        "0.0006936507936507936507936507937"
+      ],
+      "corrected_lower_Tg_lower_inclusive_upper_exclusive": [
+        "14.15476190476190476190476191",
+        "14.21984126984126984126984127"
+      ],
+      "interpretation": "Every common area-linear coefficient consistent with both published whole-Tg endpoints gives about 14.2 Tg after changing only the lower area to 20,500 km2; this does not identify the hidden physical coefficient."
+    }
+  }
+}

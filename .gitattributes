@@ -1,0 +1,4 @@
+# Preserve byte-exact source-derived data and binary research artifacts.
+data/ye_osf_extracted/*.csv -text
+*.pdf binary
+*.zip binary

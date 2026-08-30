@@ -1,0 +1,118 @@
+{
+  "source_data_reconstruction": {
+    "current_mature_rows_n": 14,
+    "current_mature_feoc_percent": [
+      0.11,
+      0.09,
+      0.07,
+      0.13,
+      0.11,
+      0.13,
+      0.15,
+      0.13,
+      0.11,
+      0.13,
+      0.09,
+      0.11,
+      0.09,
+      0.07
+    ],
+    "current_mean_percent": 0.10857142857142857,
+    "current_sample_sd_percent": 0.024133329285815134,
+    "historical_mature_rows_n": 8,
+    "historical_mature_feoc_percent": [
+      0.24,
+      0.22,
+      0.13,
+      0.28,
+      0.19,
+      0.11,
+      0.21,
+      0.18
+    ],
+    "historical_mean_percent": 0.195,
+    "historical_sample_sd_percent": 0.05580578567035603,
+    "combined_rows_n": 22,
+    "combined_mean_percent": 0.14,
+    "combined_sample_sd_percent": 0.05665265933320174,
+    "published_rounded_summary_percent": "0.14 +/- 0.06"
+  },
+  "source_data_weighting_sensitivity": {
+    "current_station_profiles": {
+      "QDN-S18": {
+        "n": 7,
+        "mean_feoc_percent": 0.11285714285714286
+      },
+      "HM-S4": {
+        "n": 7,
+        "mean_feoc_percent": 0.10428571428571429
+      }
+    },
+    "historical_profile_or_location_labels": {
+      "PC01": {
+        "n": 1,
+        "mean_feoc_percent": 0.24
+      },
+      "ROV5": {
+        "n": 7,
+        "mean_feoc_percent": 0.18857142857142858
+      }
+    },
+    "observation_weighted_mean_percent": 0.14,
+    "study_equal_mean_percent": 0.1517857142857143,
+    "profile_label_equal_mean_percent": 0.16142857142857142,
+    "historical_mean_percent_above_current_percent": 79.60526315789475,
+    "interpretation": "Descriptive sensitivity only. The source tables expose depth-resolved rows and profile/location labels, but do not establish row independence, analytical exchangeability, or globally representative weighting units."
+  },
+  "source_stated_stock_inputs": {
+    "published_lower_area_km2": 205000,
+    "upper_area_km2": 315000,
+    "depth_m": "0.30",
+    "mature_feoc_percent": "0.14"
+  },
+  "implicit_coefficient": {
+    "effective_dry_bulk_density_g_cm3": "1.65",
+    "status": "reverse-engineered; not stated in the Ye article, SI, or OSF source-data file",
+    "caution": "1.65 is an effective density (or algebraically equivalent sediment-mass coefficient); endpoint matching alone does not prove that the authors literally selected this density."
+  },
+  "unit_identity": "Tg C = area_km2 * 1e6 m2/km2 * depth_m * density_g_cm3 * 1e6 g/m3/(g/cm3) * FeOC_percent/100 * 1e-12 Tg/g",
+  "stock_results_tg": {
+    "reconstruction_with_implicit_1p65_lower_tg": "142.065000",
+    "reconstruction_with_implicit_1p65_upper_tg": "218.295000",
+    "reconstruction_with_implicit_1p65_lower_round_1_tg": 142,
+    "reconstruction_with_implicit_1p65_upper_round_1_tg": 218,
+    "corrected_reconstruction_with_implicit_1p65_lower_tg": "14.206500",
+    "corrected_reconstruction_with_implicit_1p65_lower_3_sigfig": "14.2",
+    "upper_unchanged_reconstruction_with_implicit_1p65_tg": "218.295000"
+  },
+  "rounding_audit_density_g_cm3": {
+    "lower_endpoint_142_interval_half_open": [
+      "1.643437862950058072009291521",
+      "1.655052264808362369337979094"
+    ],
+    "upper_endpoint_218_interval_half_open": [
+      "1.643990929705215419501133787",
+      "1.651549508692365835222978080"
+    ],
+    "joint_interval_half_open": [
+      "1.643990929705215419501133787",
+      "1.651549508692365835222978080"
+    ],
+    "1_65_is_in_joint_interval": true,
+    "density_implied_by_exact_142": "1.649245063879210220673635308",
+    "density_implied_by_exact_218": "1.647770219198790627362055933"
+  },
+  "rounding_audit_area_coefficient_tg_per_km2": {
+    "coefficient_from_0_14pct_0_30m_and_1_65_g_cm3": "0.000693",
+    "joint_interval_that_rounds_to_both_published_endpoints": [
+      "0.0006904761904761904761904761905",
+      "0.0006936507936507936507936507937"
+    ],
+    "interpretation": "The reported integer endpoints admit a single common linear area coefficient, but the reports do not uniquely identify its physical decomposition.",
+    "corrected_lower_tg_interval_half_open": [
+      "14.15476190476190476190476191",
+      "14.21984126984126984126984127"
+    ],
+    "corrected_lower_interval_interpretation": "Every common area-linear coefficient compatible with both published integer endpoints yields about 14.2 Tg after changing only the lower area."
+  }
+}
