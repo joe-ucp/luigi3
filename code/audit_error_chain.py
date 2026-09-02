@@ -7,10 +7,12 @@ OSF source tables, checks the cold-seep-area arithmetic, recovers the published
 stock endpoints under the stock identity, and changes only the disputed lower
 area endpoint.
 
-The value 1.65 g cm-3 is labelled *implicit*: it is the simple two-decimal bulk
-density that reproduces both rounded stock endpoints when combined with Ye's
-explicit area, depth, and independently reconstructed 0.14% Fe-OC mean.  It is
-not treated here as a parameter explicitly reported by Ye et al.
+The value 1.65 g cm-3 is labelled an *endpoint-compatible effective sediment-
+mass coefficient*: it is the simple two-decimal coefficient that reproduces
+both rounded stock endpoints when combined with Ye's explicit area, depth, and
+independently reconstructed 0.14% Fe-OC mean.  It is not treated here as a
+parameter explicitly reported by Ye et al. or as an established dry bulk
+density.
 """
 
 from __future__ import annotations
@@ -73,23 +75,32 @@ def _summary(values: list[Decimal]) -> dict[str, object]:
 def stock_tg(
     area_km2: Decimal,
     depth_m: Decimal,
-    dry_bulk_density_g_cm3: Decimal,
+    sediment_mass_coefficient_g_cm3: Decimal,
     feoc_percent: Decimal,
 ) -> Decimal:
     """Return carbon stock in Tg using a dimensionally explicit identity.
 
     area[km2] * 1e10[cm2/km2] * depth[m] * 100[cm/m]
-      * density[g/cm3] * FeOC[%]/100 * 1e-12[Tg/g]
+      * sediment mass coefficient[g/cm3] * FeOC[%]/100 * 1e-12[Tg/g]
 
     The powers of ten reduce to the compact expression below.
+
+    In a fully specified dry-mass inventory, the coefficient is dry bulk
+    density.  A coefficient inferred only by reversing rounded endpoints is
+    algebraically equivalent but does not by itself establish that physical
+    interpretation.
     """
 
-    return area_km2 * depth_m * dry_bulk_density_g_cm3 * feoc_percent / Decimal(
-        "100"
+    return (
+        area_km2
+        * depth_m
+        * sediment_mass_coefficient_g_cm3
+        * feoc_percent
+        / Decimal("100")
     )
 
 
-def implied_density_g_cm3(
+def implied_effective_sediment_mass_coefficient_g_cm3(
     reported_stock_tg: Decimal,
     area_km2: Decimal,
     depth_m: Decimal,
@@ -102,25 +113,61 @@ def implied_density_g_cm3(
     )
 
 
-def density_interval_for_integer_rounding(
+def implied_porosity_from_dry_bulk_density(
+    dry_bulk_density_g_cm3: Decimal,
+    grain_density_g_cm3: Decimal,
+) -> Decimal:
+    """Return porosity implied by a two-phase dry-density relation.
+
+    This diagnostic assumes negligible dry pore mass and uses
+    rho_d = rho_grain * (1 - porosity).  It is not a sediment model and does
+    not establish that a density was actually used by the source authors.
+    """
+
+    return Decimal("1") - dry_bulk_density_g_cm3 / grain_density_g_cm3
+
+
+def dry_bulk_density_from_porosity(
+    grain_density_g_cm3: Decimal,
+    porosity: Decimal,
+) -> Decimal:
+    """Return dry bulk density under the two-phase solid-volume relation."""
+
+    return grain_density_g_cm3 * (Decimal("1") - porosity)
+
+
+def saturated_bulk_density_from_porosity(
+    grain_density_g_cm3: Decimal,
+    porewater_density_g_cm3: Decimal,
+    porosity: Decimal,
+) -> Decimal:
+    """Return saturated bulk density for solid and porewater volume fractions."""
+
+    return dry_bulk_density_from_porosity(
+        grain_density_g_cm3, porosity
+    ) + porewater_density_g_cm3 * porosity
+
+
+def effective_sediment_mass_coefficient_interval_for_integer_rounding(
     displayed_stock_tg: Decimal,
     area_km2: Decimal,
     depth_m: Decimal,
     feoc_percent: Decimal,
 ) -> tuple[Decimal, Decimal]:
-    """Density interval whose exact stock rounds to the displayed integer.
+    """Effective-coefficient interval whose stock rounds to the shown integer.
 
     The interval is half-open under ordinary nearest-integer rounding.  It is
     used only to test compatibility with the whole-Tg values printed by Ye;
-    it does not turn the unstated density into a reported parameter.
+    it does not turn the unstated coefficient into a reported parameter or
+    establish that it is dry bulk density.
     """
 
     half = Decimal("0.5")
     return (
-        implied_density_g_cm3(
+        implied_effective_sediment_mass_coefficient_g_cm3(
             displayed_stock_tg - half, area_km2, depth_m, feoc_percent
         ),
-        implied_density_g_cm3(
+        implied_effective_sediment_mass_coefficient_g_cm3(
             displayed_stock_tg + half, area_km2, depth_m, feoc_percent
         ),
     )
@@ -131,8 +178,10 @@ def calculate() -> dict[str, object]:
     s7_rows = _rows(TABLE_S7)
 
     current_rows = [row for row in s4_rows if row["Group"].startswith("Mature seep")]
+    early_rows = [row for row in s4_rows if row["Group"].startswith("Early-stage seep")]
     historical_rows = [row for row in s7_rows if row["Group"] == "Mature Cold Seep"]
     current_values = _decimal_values(current_rows, "FeOC (%)")
+    early_values = _decimal_values(early_rows, "FeOC (%)")
     historical_values = _decimal_values(historical_rows, "FeOC (%)")
     combined_values = current_values + historical_values
     all_current_seep_rows = [
@@ -151,43 +200,54 @@ def calculate() -> dict[str, object]:
     published_lower_area_km2 = Decimal("205000")
     corrected_lower_area_km2 = Decimal("20500")
     upper_area_km2 = Decimal("315000")
+    harris_geomorphic_slope_area_km2 = Decimal("19606260")
 
     depth_m = Decimal("0.30")
     reconstructed_feoc_percent = sum(combined_values) / Decimal(len(combined_values))
-    implicit_density = Decimal("1.65")
+    endpoint_compatible_effective_coefficient = Decimal("1.65")
     lower_stock = stock_tg(
         published_lower_area_km2,
         depth_m,
-        implicit_density,
+        endpoint_compatible_effective_coefficient,
         reconstructed_feoc_percent,
     )
     upper_stock = stock_tg(
         upper_area_km2,
         depth_m,
-        implicit_density,
+        endpoint_compatible_effective_coefficient,
         reconstructed_feoc_percent,
     )
     corrected_lower_stock = stock_tg(
         corrected_lower_area_km2,
         depth_m,
-        implicit_density,
+        endpoint_compatible_effective_coefficient,
         reconstructed_feoc_percent,
     )
-    lower_density_interval = density_interval_for_integer_rounding(
-        Decimal("142"),
-        published_lower_area_km2,
-        depth_m,
-        reconstructed_feoc_percent,
+    lower_effective_coefficient_interval = (
+        effective_sediment_mass_coefficient_interval_for_integer_rounding(
+            Decimal("142"),
+            published_lower_area_km2,
+            depth_m,
+            reconstructed_feoc_percent,
+        )
     )
-    upper_density_interval = density_interval_for_integer_rounding(
-        Decimal("218"),
-        upper_area_km2,
-        depth_m,
-        reconstructed_feoc_percent,
+    upper_effective_coefficient_interval = (
+        effective_sediment_mass_coefficient_interval_for_integer_rounding(
+            Decimal("218"),
+            upper_area_km2,
+            depth_m,
+            reconstructed_feoc_percent,
+        )
     )
-    joint_density_interval = (
-        max(lower_density_interval[0], upper_density_interval[0]),
-        min(lower_density_interval[1], upper_density_interval[1]),
+    joint_effective_coefficient_interval = (
+        max(
+            lower_effective_coefficient_interval[0],
+            upper_effective_coefficient_interval[0],
+        ),
+        min(
+            lower_effective_coefficient_interval[1],
+            upper_effective_coefficient_interval[1],
+        ),
     )
     lower_area_coefficient_interval = (
         (Decimal("142") - Decimal("0.5")) / published_lower_area_km2,
@@ -205,9 +265,74 @@ def calculate() -> dict[str, object]:
         corrected_lower_area_km2 * joint_area_coefficient_interval[0],
         corrected_lower_area_km2 * joint_area_coefficient_interval[1],
     )
+    sediment_mass_coefficient_scenarios = {
+        "same_region_measured_average_chen_2024": {
+            "coefficient_g_cm3": Decimal("0.9"),
+            "coefficient_role": "literature_dry_bulk_density_comparator",
+        },
+        "jiang_and_li_assumption": {
+            "coefficient_g_cm3": Decimal("1.3"),
+            "coefficient_role": "literature_dry_bulk_density_assumption",
+        },
+        "endpoint_compatible_effective_value": {
+            "coefficient_g_cm3": endpoint_compatible_effective_coefficient,
+            "coefficient_role": (
+                "reverse_engineered_effective_coefficient_not_author_reported"
+            ),
+        },
+    }
+    sediment_mass_coefficient_sensitivity = {
+        label: {
+            "coefficient_g_cm3": str(scenario["coefficient_g_cm3"]),
+            "coefficient_role": scenario["coefficient_role"],
+            "nominal_20500_km2_tg": str(
+                stock_tg(
+                    corrected_lower_area_km2,
+                    depth_m,
+                    scenario["coefficient_g_cm3"],
+                    reconstructed_feoc_percent,
+                )
+            ),
+            "published_205000_km2_tg": str(
+                stock_tg(
+                    published_lower_area_km2,
+                    depth_m,
+                    scenario["coefficient_g_cm3"],
+                    reconstructed_feoc_percent,
+                )
+            ),
+            "published_315000_km2_tg": str(
+                stock_tg(
+                    upper_area_km2,
+                    depth_m,
+                    scenario["coefficient_g_cm3"],
+                    reconstructed_feoc_percent,
+                )
+            ),
+        }
+        for label, scenario in sediment_mass_coefficient_scenarios.items()
+    }
+
+    wet_dry_diagnostic_porosity = Decimal("0.65")
+    wet_dry_diagnostic_grain_density = Decimal("2.70")
+    wet_dry_diagnostic_porewater_density = Decimal("1.024")
+    wet_dry_diagnostic_dry_bulk_density = dry_bulk_density_from_porosity(
+        wet_dry_diagnostic_grain_density,
+        wet_dry_diagnostic_porosity,
+    )
+    wet_dry_diagnostic_saturated_bulk_density = (
+        saturated_bulk_density_from_porosity(
+            wet_dry_diagnostic_grain_density,
+            wet_dry_diagnostic_porewater_density,
+            wet_dry_diagnostic_porosity,
+        )
+    )
 
     return {
-        "scope": "One numerical lineage only; no global-area reassessment.",
+        "scope": (
+            "Area provenance, construction comparability, density sensitivity, and "
+            "stage-domain consistency; no new global-area or global-stock estimate."
+        ),
         "source_files": {
             "ye_table_s4_csv": {
                 "path": TABLE_S4.relative_to(REPO_ROOT).as_posix(),
@@ -219,6 +344,7 @@ def calculate() -> dict[str, object]:
             },
         },
         "ye_mature_feoc_reconstruction": {
+            "current_study_early_stage_table_s4": _summary(early_values),
             "current_study_table_s4": _summary(current_values),
             "historical_table_s7": _summary(historical_values),
             "combined": _summary(combined_values),
@@ -266,6 +392,29 @@ def calculate() -> dict[str, object]:
                     arithmetical_area_km2 / (Decimal("1.852") ** 2)
                 ),
             },
+            "occupation_equivalents_on_41_million_km2_percent": {
+                "nominal_20500_km2": str(
+                    corrected_lower_area_km2 / slope_area_km2 * Decimal("100")
+                ),
+                "published_205000_km2": str(
+                    published_lower_area_km2 / slope_area_km2 * Decimal("100")
+                ),
+                "published_315000_km2": str(
+                    upper_area_km2 / slope_area_km2 * Decimal("100")
+                ),
+            },
+            "slope_mask_sensitivity": {
+                "harris_2014_geomorphic_slope_area_km2": str(
+                    harris_geomorphic_slope_area_km2
+                ),
+                "area_at_0_05_percent_km2": str(
+                    harris_geomorphic_slope_area_km2 * occupancy_fraction
+                ),
+                "interpretation": (
+                    "A denominator-definition sensitivity, not an empirical "
+                    "confidence interval for seep area."
+                ),
+            },
         },
         "ye_stock_reconstruction": {
             "identity": (
@@ -279,10 +428,14 @@ def calculate() -> dict[str, object]:
                 "combined_mature_FeOC_percent": str(reconstructed_feoc_percent),
             },
             "implicit_input_not_located_in_article_si_or_osf": {
-                "dry_bulk_density_g_cm3": str(implicit_density),
+                "endpoint_compatible_effective_sediment_mass_coefficient_g_cm3": str(
+                    endpoint_compatible_effective_coefficient
+                ),
                 "basis": (
                     "simple two-decimal value that recovers both published "
-                    "whole-Tg endpoints from the explicit/data-derived inputs"
+                    "whole-Tg endpoints from the explicit/data-derived inputs; "
+                    "this algebraic reconstruction neither identifies the "
+                    "coefficient as dry bulk density nor attributes it to Ye et al."
                 ),
             },
             "computed": {
@@ -304,9 +457,9 @@ def calculate() -> dict[str, object]:
                     lower_stock / corrected_lower_stock
                 ),
             },
-            "density_implied_by_rounded_endpoints_separately": {
+            "effective_sediment_mass_coefficient_implied_by_rounded_endpoints_separately": {
                 "from_142_Tg": str(
-                    implied_density_g_cm3(
+                    implied_effective_sediment_mass_coefficient_g_cm3(
                         Decimal("142"),
                         published_lower_area_km2,
                         depth_m,
@@ -314,7 +467,7 @@ def calculate() -> dict[str, object]:
                     )
                 ),
                 "from_218_Tg": str(
-                    implied_density_g_cm3(
+                    implied_effective_sediment_mass_coefficient_g_cm3(
                         Decimal("218"),
                         upper_area_km2,
                         depth_m,
@@ -322,23 +475,23 @@ def calculate() -> dict[str, object]:
                     )
                 ),
             },
-            "density_intervals_that_round_to_each_endpoint": {
+            "effective_sediment_mass_coefficient_intervals_that_round_to_each_endpoint": {
                 "from_142_Tg_lower_inclusive_upper_exclusive": [
-                    str(lower_density_interval[0]),
-                    str(lower_density_interval[1]),
+                    str(lower_effective_coefficient_interval[0]),
+                    str(lower_effective_coefficient_interval[1]),
                 ],
                 "from_218_Tg_lower_inclusive_upper_exclusive": [
-                    str(upper_density_interval[0]),
-                    str(upper_density_interval[1]),
+                    str(upper_effective_coefficient_interval[0]),
+                    str(upper_effective_coefficient_interval[1]),
                 ],
                 "joint_interval_lower_inclusive_upper_exclusive": [
-                    str(joint_density_interval[0]),
-                    str(joint_density_interval[1]),
+                    str(joint_effective_coefficient_interval[0]),
+                    str(joint_effective_coefficient_interval[1]),
                 ],
-                "implicit_1.65_is_inside_joint_interval": (
-                    joint_density_interval[0]
-                    <= implicit_density
-                    < joint_density_interval[1]
+                "endpoint_compatible_1.65_is_inside_joint_interval": (
+                    joint_effective_coefficient_interval[0]
+                    <= endpoint_compatible_effective_coefficient
+                    < joint_effective_coefficient_interval[1]
                 ),
             },
             "density_free_area_linear_rounding_audit": {
@@ -354,6 +507,76 @@ def calculate() -> dict[str, object]:
                     "Every common area-linear coefficient consistent with both published "
                     "whole-Tg endpoints gives about 14.2 Tg after changing only the lower "
                     "area to 20,500 km2; this does not identify the hidden physical coefficient."
+                ),
+            },
+            "sediment_mass_coefficient_sensitivity": {
+                "values": sediment_mass_coefficient_sensitivity,
+                "interpretation": (
+                    "Conditional stocks with fixed area, depth, and Fe-OC content. "
+                    "The 0.9 and 1.3 g cm-3 values are literature dry-bulk-density "
+                    "comparators, not a probability distribution or replacements "
+                    "established for Ye's samples. The 1.65 g cm-3 value is an "
+                    "endpoint-compatible effective coefficient, not a reported density."
+                ),
+            },
+            "porosity_diagnostic": {
+                "analog_measured_grain_density_g_cm3": "2.70",
+                "porosity_if_1_65_effective_coefficient_is_dry_bulk_density": str(
+                    implied_porosity_from_dry_bulk_density(
+                        endpoint_compatible_effective_coefficient, Decimal("2.70")
+                    )
+                ),
+                "wet_vs_dry_density_diagnostic": {
+                    "porosity": str(wet_dry_diagnostic_porosity),
+                    "grain_density_g_cm3": str(
+                        wet_dry_diagnostic_grain_density
+                    ),
+                    "porewater_density_g_cm3": str(
+                        wet_dry_diagnostic_porewater_density
+                    ),
+                    "dry_bulk_density_formula": "rho_d = rho_g * (1 - porosity)",
+                    "dry_bulk_density_g_cm3": str(
+                        wet_dry_diagnostic_dry_bulk_density
+                    ),
+                    "saturated_bulk_density_formula": (
+                        "rho_sat = rho_d + rho_w * porosity"
+                    ),
+                    "saturated_bulk_density_g_cm3": str(
+                        wet_dry_diagnostic_saturated_bulk_density
+                    ),
+                    "interpretation": (
+                        "The numerical proximity of the illustrative saturated "
+                        "bulk density to 1.65 g cm-3 makes a wet-versus-dry mismatch "
+                        "a diagnostic possibility, not evidence of Ye et al.'s method."
+                    ),
+                },
+                "interpretation": (
+                    "Two-phase diagnostic using the mean grain density measured "
+                    "at a hydrate-margin analog. If the effective 1.65 g cm-3 "
+                    "coefficient is interpreted as dry bulk density, it is high "
+                    "relative to local comparators; this conditional diagnostic "
+                    "does not make the value physically impossible or prove its use."
+                ),
+            },
+            "stage_domain_test": {
+                "current_mature_only": (
+                    "With Fe-OC concentration and the sediment-mass coefficient "
+                    "held fixed, if A_mature = f_m * A_active and 0 < f_m <= 1, "
+                    "substituting total active area for current mature area "
+                    "multiplies current-mature-only stock by 1/f_m: upward for "
+                    "0 < f_m < 1 and unchanged at f_m = 1."
+                ),
+                "all_active_stages": (
+                    "If a common sediment-mass factor K is fixed across stages, "
+                    "the sign depends on c_mature minus the area-weighted Fe-OC "
+                    "concentration across active stages. If stage-specific mass "
+                    "coefficients K_i vary, it instead depends on K_mature * "
+                    "c_mature minus the area-weighted K_i * c_i products."
+                ),
+                "eventual_mature_scenario": (
+                    "Even with Fe-OC concentration and the sediment-mass coefficient "
+                    "held fixed, this scenario requires the untested equality "
+                    "A_future_mature = A_current_active; its bias direction is unresolved."
                 ),
             },
         },

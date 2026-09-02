@@ -47,6 +47,14 @@ class ErrorChainAuditTests(unittest.TestCase):
             math.isclose(float(current["sample_sd_percent"]), 0.0241333292858151)
         )
 
+    def test_ye_current_study_early_stage_summary(self) -> None:
+        early = self.result["ye_mature_feoc_reconstruction"][
+            "current_study_early_stage_table_s4"
+        ]
+        self.assertEqual(early["n"], 21)
+        self.assertEqual(early["sum_percent"], "3.45")
+        self.assertTrue(math.isclose(float(early["mean_percent"]), 0.1642857142857143))
+
     def test_ye_historical_mature_summary(self) -> None:
         historical = self.result["ye_mature_feoc_reconstruction"][
             "historical_table_s7"
@@ -138,16 +146,110 @@ class ErrorChainAuditTests(unittest.TestCase):
         )
         self.assertEqual(value, Decimal("142.06500"))
 
-    def test_implicit_density_is_compatible_with_both_printed_roundings(self) -> None:
+    def test_sediment_mass_coefficient_sensitivity_values_and_roles(self) -> None:
+        values = self.result["ye_stock_reconstruction"][
+            "sediment_mass_coefficient_sensitivity"
+        ]["values"]
+        self.assertEqual(
+            Decimal(values["same_region_measured_average_chen_2024"]["published_205000_km2_tg"]),
+            Decimal("77.49000"),
+        )
+        self.assertEqual(
+            Decimal(values["jiang_and_li_assumption"]["published_315000_km2_tg"]),
+            Decimal("171.99000"),
+        )
+        self.assertEqual(
+            Decimal(values["endpoint_compatible_effective_value"]["nominal_20500_km2_tg"]),
+            Decimal("14.206500"),
+        )
+        self.assertEqual(
+            values["same_region_measured_average_chen_2024"]["coefficient_role"],
+            "literature_dry_bulk_density_comparator",
+        )
+        self.assertEqual(
+            values["jiang_and_li_assumption"]["coefficient_role"],
+            "literature_dry_bulk_density_assumption",
+        )
+        self.assertEqual(
+            values["endpoint_compatible_effective_value"]["coefficient_role"],
+            "reverse_engineered_effective_coefficient_not_author_reported",
+        )
+        self.assertEqual(
+            values["endpoint_compatible_effective_value"]["coefficient_g_cm3"],
+            "1.65",
+        )
+
+    def test_area_denominator_and_porosity_diagnostics(self) -> None:
+        area = self.result["area_arithmetic"]
+        self.assertEqual(
+            area["occupation_equivalents_on_41_million_km2_percent"],
+            {
+                "nominal_20500_km2": "0.0500",
+                "published_205000_km2": "0.500",
+                "published_315000_km2": "0.7682926829268292682926829268",
+            },
+        )
+        self.assertEqual(
+            Decimal(area["slope_mask_sensitivity"]["area_at_0_05_percent_km2"]),
+            Decimal("9803.1300"),
+        )
+        porosity = self.result["ye_stock_reconstruction"]["porosity_diagnostic"]
+        self.assertTrue(
+            math.isclose(
+                float(
+                    porosity[
+                        "porosity_if_1_65_effective_coefficient_is_dry_bulk_density"
+                    ]
+                ),
+                0.3888888888888889,
+            )
+        )
+
+    def test_wet_vs_dry_density_diagnostic(self) -> None:
+        diagnostic = self.result["ye_stock_reconstruction"][
+            "porosity_diagnostic"
+        ]["wet_vs_dry_density_diagnostic"]
+        self.assertEqual(Decimal(diagnostic["porosity"]), Decimal("0.65"))
+        self.assertEqual(
+            Decimal(diagnostic["dry_bulk_density_g_cm3"]), Decimal("0.945")
+        )
+        self.assertEqual(
+            Decimal(diagnostic["saturated_bulk_density_g_cm3"]),
+            Decimal("1.6106"),
+        )
+        self.assertEqual(
+            AUDIT.dry_bulk_density_from_porosity(
+                Decimal("2.70"), Decimal("0.65")
+            ),
+            Decimal("0.945"),
+        )
+        self.assertEqual(
+            AUDIT.saturated_bulk_density_from_porosity(
+                Decimal("2.70"), Decimal("1.024"), Decimal("0.65")
+            ),
+            Decimal("1.6106"),
+        )
+
+    def test_effective_coefficient_is_compatible_with_both_printed_roundings(self) -> None:
         intervals = self.result["ye_stock_reconstruction"][
-            "density_intervals_that_round_to_each_endpoint"
+            "effective_sediment_mass_coefficient_intervals_that_round_to_each_endpoint"
         ]
         lower, upper = map(
             Decimal, intervals["joint_interval_lower_inclusive_upper_exclusive"]
         )
         self.assertLessEqual(lower, Decimal("1.65"))
         self.assertLess(Decimal("1.65"), upper)
-        self.assertTrue(intervals["implicit_1.65_is_inside_joint_interval"])
+        self.assertTrue(
+            intervals["endpoint_compatible_1.65_is_inside_joint_interval"]
+        )
+
+    def test_stage_domain_diagnostics_state_parameter_conditions(self) -> None:
+        stage = self.result["ye_stock_reconstruction"]["stage_domain_test"]
+        self.assertIn("held fixed", stage["current_mature_only"])
+        self.assertIn("upward for 0 < f_m < 1", stage["current_mature_only"])
+        self.assertIn("unchanged at f_m = 1", stage["current_mature_only"])
+        self.assertIn("common sediment-mass factor K", stage["all_active_stages"])
+        self.assertIn("stage-specific mass coefficients K_i", stage["all_active_stages"])
 
 
 if __name__ == "__main__":

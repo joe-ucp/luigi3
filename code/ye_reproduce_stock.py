@@ -1,8 +1,9 @@
 """Independent reconstruction of Ye et al. (2026)'s Fe-OC stock endpoints.
 
-The script deliberately separates source-stated inputs from the effective dry
-bulk density required to recover the published integer endpoints.  The latter
-is not labelled as a source-stated value.
+The script deliberately separates source-stated inputs from the endpoint-
+compatible effective sediment-mass coefficient required to recover the
+published integer endpoints. The latter is neither labelled as a source-
+stated value nor assumed to be dry bulk density.
 """
 
 from __future__ import annotations
@@ -20,7 +21,7 @@ AREA_HIGH_KM2 = Decimal("315000")
 AREA_LOW_CORRECTED_KM2 = Decimal("20500")
 DEPTH_M = Decimal("0.30")
 FEOC_PERCENT = Decimal("0.14")
-EFFECTIVE_DRY_BULK_DENSITY_G_CM3 = Decimal("1.65")
+ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3 = Decimal("1.65")
 
 
 def read_mature_feoc(current_csv: Path, literature_csv: Path) -> tuple[list[float], list[float]]:
@@ -68,17 +69,23 @@ def read_mature_profile_groups(
     return current_groups, literature_groups
 
 
-def stock_tg(area_km2: Decimal, density_g_cm3: Decimal) -> Decimal:
+def stock_tg(
+    area_km2: Decimal, sediment_mass_coefficient_g_cm3: Decimal
+) -> Decimal:
     """Return Fe-OC stock in Tg C with every unit conversion explicit.
 
-    area[km2] * 1e6[m2/km2] * depth[m] * density[g/cm3]
+    area[km2] * 1e6[m2/km2] * depth[m] * coefficient[g/cm3]
     * 1e6[g/m3 per g/cm3] * FeOC[%]/100 * 1e-12[Tg/g]
+
+    For a fully specified dry-mass inventory, the coefficient is dry bulk
+    density. Reverse-engineering rounded endpoints recovers only an
+    algebraically equivalent effective coefficient, not its physical identity.
     """
     return (
         area_km2
         * Decimal("1e6")
         * DEPTH_M
-        * density_g_cm3
+        * sediment_mass_coefficient_g_cm3
         * Decimal("1e6")
         * FEOC_PERCENT
         / Decimal("100")
@@ -86,11 +93,16 @@ def stock_tg(area_km2: Decimal, density_g_cm3: Decimal) -> Decimal:
     )
 
 
-def density_interval_for_integer(area_km2: Decimal, reported_tg: Decimal) -> tuple[Decimal, Decimal]:
-    """Half-open density interval that rounds to reported_tg at 1-Tg precision."""
+def effective_sediment_mass_coefficient_interval_for_integer(
+    area_km2: Decimal, reported_tg: Decimal
+) -> tuple[Decimal, Decimal]:
+    """Half-open effective-coefficient interval for a rounded stock endpoint."""
+
     multiplier = stock_tg(area_km2, Decimal("1"))
-    return ((reported_tg - Decimal("0.5")) / multiplier,
-            (reported_tg + Decimal("0.5")) / multiplier)
+    return (
+        (reported_tg - Decimal("0.5")) / multiplier,
+        (reported_tg + Decimal("0.5")) / multiplier,
+    )
 
 
 def build_result(current_csv: Path, literature_csv: Path) -> dict:
@@ -103,9 +115,26 @@ def build_result(current_csv: Path, literature_csv: Path) -> dict:
         statistics.mean(values) for values in profile_groups.values()
     )
 
-    low_interval = density_interval_for_integer(AREA_LOW_PUBLISHED_KM2, Decimal("142"))
-    high_interval = density_interval_for_integer(AREA_HIGH_KM2, Decimal("218"))
-    joint_interval = (max(low_interval[0], high_interval[0]), min(low_interval[1], high_interval[1]))
+    low_effective_coefficient_interval = (
+        effective_sediment_mass_coefficient_interval_for_integer(
+            AREA_LOW_PUBLISHED_KM2, Decimal("142")
+        )
+    )
+    high_effective_coefficient_interval = (
+        effective_sediment_mass_coefficient_interval_for_integer(
+            AREA_HIGH_KM2, Decimal("218")
+        )
+    )
+    joint_effective_coefficient_interval = (
+        max(
+            low_effective_coefficient_interval[0],
+            high_effective_coefficient_interval[0],
+        ),
+        min(
+            low_effective_coefficient_interval[1],
+            high_effective_coefficient_interval[1],
+        ),
+    )
     low_coefficient_interval = (
         (Decimal("142") - Decimal("0.5")) / AREA_LOW_PUBLISHED_KM2,
         (Decimal("142") + Decimal("0.5")) / AREA_LOW_PUBLISHED_KM2,
@@ -162,48 +191,90 @@ def build_result(current_csv: Path, literature_csv: Path) -> dict:
             "mature_feoc_percent": str(FEOC_PERCENT),
         },
         "implicit_coefficient": {
-            "effective_dry_bulk_density_g_cm3": str(EFFECTIVE_DRY_BULK_DENSITY_G_CM3),
+            "endpoint_compatible_effective_sediment_mass_coefficient_g_cm3": str(
+                ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3
+            ),
             "status": "reverse-engineered; not stated in the Ye article, SI, or OSF source-data file",
             "caution": (
-                "1.65 is an effective density (or algebraically equivalent sediment-mass coefficient); "
-                "endpoint matching alone does not prove that the authors literally selected this density."
+                "The 1.65 g cm-3 value is an algebraically endpoint-compatible "
+                "effective sediment-mass coefficient. Interpreting it as dry bulk "
+                "density is conditional; endpoint matching neither establishes its "
+                "physical identity nor proves that Ye et al. selected it."
             ),
         },
         "unit_identity": (
-            "Tg C = area_km2 * 1e6 m2/km2 * depth_m * density_g_cm3 * "
+            "Tg C = area_km2 * 1e6 m2/km2 * depth_m * "
+            "sediment_mass_coefficient_g_cm3 * "
             "1e6 g/m3/(g/cm3) * FeOC_percent/100 * 1e-12 Tg/g"
         ),
         "stock_results_tg": {
             "reconstruction_with_implicit_1p65_lower_tg": str(
-                stock_tg(AREA_LOW_PUBLISHED_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3)
+                stock_tg(
+                    AREA_LOW_PUBLISHED_KM2,
+                    ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+                )
             ),
             "reconstruction_with_implicit_1p65_upper_tg": str(
-                stock_tg(AREA_HIGH_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3)
+                stock_tg(
+                    AREA_HIGH_KM2,
+                    ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+                )
             ),
             "reconstruction_with_implicit_1p65_lower_round_1_tg": round(
-                float(stock_tg(AREA_LOW_PUBLISHED_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3))
+                float(
+                    stock_tg(
+                        AREA_LOW_PUBLISHED_KM2,
+                        ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+                    )
+                )
             ),
             "reconstruction_with_implicit_1p65_upper_round_1_tg": round(
-                float(stock_tg(AREA_HIGH_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3))
+                float(
+                    stock_tg(
+                        AREA_HIGH_KM2,
+                        ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+                    )
+                )
             ),
             "corrected_reconstruction_with_implicit_1p65_lower_tg": str(
-                stock_tg(AREA_LOW_CORRECTED_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3)
+                stock_tg(
+                    AREA_LOW_CORRECTED_KM2,
+                    ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+                )
             ),
             "corrected_reconstruction_with_implicit_1p65_lower_3_sigfig": "14.2",
             "upper_unchanged_reconstruction_with_implicit_1p65_tg": str(
-                stock_tg(AREA_HIGH_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3)
+                stock_tg(
+                    AREA_HIGH_KM2,
+                    ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+                )
             ),
         },
-        "rounding_audit_density_g_cm3": {
-            "lower_endpoint_142_interval_half_open": [str(x) for x in low_interval],
-            "upper_endpoint_218_interval_half_open": [str(x) for x in high_interval],
-            "joint_interval_half_open": [str(x) for x in joint_interval],
-            "1_65_is_in_joint_interval": joint_interval[0] <= EFFECTIVE_DRY_BULK_DENSITY_G_CM3 < joint_interval[1],
-            "density_implied_by_exact_142": str(Decimal("142") / stock_tg(AREA_LOW_PUBLISHED_KM2, Decimal("1"))),
-            "density_implied_by_exact_218": str(Decimal("218") / stock_tg(AREA_HIGH_KM2, Decimal("1"))),
+        "rounding_audit_effective_sediment_mass_coefficient_g_cm3": {
+            "lower_endpoint_142_interval_half_open": [
+                str(x) for x in low_effective_coefficient_interval
+            ],
+            "upper_endpoint_218_interval_half_open": [
+                str(x) for x in high_effective_coefficient_interval
+            ],
+            "joint_interval_half_open": [
+                str(x) for x in joint_effective_coefficient_interval
+            ],
+            "1_65_is_in_joint_interval": (
+                joint_effective_coefficient_interval[0]
+                <= ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3
+                < joint_effective_coefficient_interval[1]
+            ),
+            "effective_coefficient_implied_by_exact_142": str(
+                Decimal("142")
+                / stock_tg(AREA_LOW_PUBLISHED_KM2, Decimal("1"))
+            ),
+            "effective_coefficient_implied_by_exact_218": str(
+                Decimal("218") / stock_tg(AREA_HIGH_KM2, Decimal("1"))
+            ),
         },
         "rounding_audit_area_coefficient_tg_per_km2": {
-            "coefficient_from_0_14pct_0_30m_and_1_65_g_cm3": "0.000693",
+            "coefficient_from_0_14pct_0_30m_and_1_65_effective_g_cm3": "0.000693",
             "joint_interval_that_rounds_to_both_published_endpoints": [
                 str(x) for x in joint_coefficient_interval
             ],
@@ -236,10 +307,21 @@ def build_result(current_csv: Path, literature_csv: Path) -> dict:
     assert abs(study_equal_mean - 0.15178571428571427) < 1e-15
     assert abs(profile_label_equal_mean - 0.16142857142857142) < 1e-15
     assert round(statistics.stdev(combined), 2) == 0.06
-    assert stock_tg(AREA_LOW_PUBLISHED_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3) == Decimal("142.065")
-    assert stock_tg(AREA_HIGH_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3) == Decimal("218.295")
-    assert stock_tg(AREA_LOW_CORRECTED_KM2, EFFECTIVE_DRY_BULK_DENSITY_G_CM3) == Decimal("14.2065")
-    assert result["rounding_audit_density_g_cm3"]["1_65_is_in_joint_interval"]
+    assert stock_tg(
+        AREA_LOW_PUBLISHED_KM2,
+        ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+    ) == Decimal("142.065")
+    assert stock_tg(
+        AREA_HIGH_KM2,
+        ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+    ) == Decimal("218.295")
+    assert stock_tg(
+        AREA_LOW_CORRECTED_KM2,
+        ENDPOINT_COMPATIBLE_EFFECTIVE_SEDIMENT_MASS_COEFFICIENT_G_CM3,
+    ) == Decimal("14.2065")
+    assert result[
+        "rounding_audit_effective_sediment_mass_coefficient_g_cm3"
+    ]["1_65_is_in_joint_interval"]
     return result
 
 

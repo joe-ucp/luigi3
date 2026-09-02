@@ -10,7 +10,7 @@
 \usepackage[font=small,labelfont=bf,labelsep=period]{caption}
 \usepackage{enumitem}
 \usepackage{tikz}
-\usetikzlibrary{positioning,arrows.meta}
+\usetikzlibrary{positioning,arrows.meta,calc}
 \usepackage{xcolor}
 \usepackage{xurl}
 \usepackage[
@@ -22,360 +22,324 @@
 \urlstyle{same}
 
 \hypersetup{
-  pdftitle={A Factor-of-Ten Inconsistency in a Cited Cold-Seep Area and Its Conditional Effect on a Published Global Fe-OC Stock Endpoint},
+  pdftitle={Incommensurate Global Cold-Seep Area Constructions and Their Consequences for an Iron-Bound Organic-Carbon Stock},
   pdfauthor={UCP Technology LLC},
-  pdfsubject={A provenance audit and conditional arithmetic reanalysis},
-  pdfkeywords={cold seeps, iron-bound organic carbon, global stock, numerical provenance, citation-chain transmission}
+  pdfsubject={Global cold-seep area, spatial upscaling, and Fe-OC stock reanalysis},
+  pdfkeywords={cold seeps, iron-bound organic carbon, global area, spatial upscaling, dry bulk density, ecological succession}
 }
 
 \pagestyle{plain}
 \setcounter{secnumdepth}{2}
-\setcounter{tocdepth}{2}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Z}{>{\centering\arraybackslash}X}
 
-\title{\bfseries A Factor-of-Ten Inconsistency in a Cited Cold-Seep Area and Its Conditional Effect on a Published Global Fe-OC Stock Endpoint}
+\title{\bfseries Incommensurate Global Cold-Seep Area Constructions and Their Consequences for an Iron-Bound Organic-Carbon Stock}
 \author{UCP Technology LLC\\[3pt]
   \small\href{https://ucptechnology.ai}{ucptechnology.ai}}
-\date{\small Version: August 30, 2026}
+\date{\small Version: September 2, 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Ye et al.\ (2026) report 142--218 Tg C of iron-bound organic carbon (Fe-OC) in the upper 30 cm of mature cold-seep sediments after applying a published global seep-area interval of $2.05$--$3.15\times10^5$ km$^2$. We audited the numerical provenance of that interval and recalculated the corresponding lower endpoint from the public source record. Boetius and Wenzh\"ofer (2013) print a continental-slope area of 41 million km$^2$ and assume that active seep systems occupy approximately 0.05\% of it. Those nominal premises multiply to 20,500 km$^2$, or $2.05\times10^4$ km$^2$. Jiang et al.\ (2025) instead report $2.05\times10^5$ km$^2$ as the lower endpoint of a jointly cited range without an endpoint-specific derivation. Li et al.\ (2024) provide a separate nominal construction matching Jiang et al.'s reported upper endpoint, but not the lower one. The publication record therefore demonstrates an incompatibility between the reported lower endpoint and the identifiable cited premises; it is consistent with, but does not independently prove, factor-of-ten transmission from those premises. Ye et al.\ subsequently use the same published area value in an area-linear stock calculation. Substituting the nominal $2.05\times10^4$ km$^2$ value while leaving all other terms unchanged changes the corresponding endpoint from approximately 142 to approximately 14.2 Tg C. A row-weighted calculation from the public source rows also yields 0.14\%, numerically matching the reported Fe-OC input; the public files do not disclose the aggregation rule. The result is a conditional arithmetic substitution to a published endpoint, not an estimate of the true global cold-seep area or Fe-OC stock.
+Global biogeochemical inventories require a spatial domain that is commensurate with the measured concentration, sediment mass, and ecosystem state. We re-evaluate the area term used by Ye et al.\ (2026) to estimate 142--218 Tg C of iron-bound organic carbon (Fe-OC) in the upper 30 cm of mature cold-seep sediment. Two primary results emerge. First, Ye et al.\ state that cold seeps occupy less than 0.05\% of continental-slope area, citing a source that gives approximately 41 million km$^2$ of slope. That statement implies less than $2.05\times10^4$ km$^2$, yet the same article later applies $2.05$--$3.15\times10^5$ km$^2$ without a domain conversion. Second, the two values in that reported span are not shown to be bounds from a common estimator. The identifiable lower-source premises form a top-down slope-area--occupation calculation; the upper numerical fingerprint is a bottom-up extrapolation of an approximately 350-km$^2$ Haima field descriptor across a discovery-limited count of more than 900 seeps. The methods, spatial objects, sampling frames, and error structures are incommensurate, and "more than 900" cannot generate an upper bound at a nominal count of 900. Independent fluid-expulsion compilations and regional acoustic surveys document substantial inventory incompleteness and heterogeneity but do not supply a global active-sediment area. The absolute stock also contains an undisclosed sediment-mass coefficient: reproducing both endpoints with the reported depth and Fe-OC content requires an effective value near 1.65 g cm$^{-3}$. Interpreted as dry bulk density, this value is high relative to available regional and near-surface seep analogs, although not physically impossible. Replacing only 205,000 by the printed-premise product of 20,500 km$^2$ still changes the corresponding endpoint from about 142 to 14.2 Tg C, but this is a controlled sensitivity, not a new lower bound. The disclosed record therefore does not support interpreting the published area pair or derived stock span as empirical global intervals.
 \end{abstract}
 
 \noindent\textbf{Keywords.}
-cold seeps; iron-bound organic carbon; global stock; numerical provenance;
-citation-chain transmission; conditional reanalysis.
-
-\clearpage
-\tableofcontents
+cold seeps; iron-bound organic carbon; global area; spatial upscaling;
+dry bulk density; ecological succession.
 
 \section{Introduction}
 
-Global stock calculations commonly combine a locally measured concentration with a spatial domain over which that concentration is upscaled. In an area-linear calculation, the provenance of the area term is therefore as consequential as the measured concentration. This paper concerns correction scholarship: it audits one published numerical chain and does not estimate the true global cold-seep area or global Fe-OC inventory.
+Global stock estimates commonly multiply a locally measured concentration by a sediment mass and a mapped or inferred spatial domain. The calculation is meaningful only when the area, material property, and ecosystem state refer to the same spatial object and target population. Cold seeps make this requirement unusually demanding: seepage is patchy and temporally variable, regional surveys detect different physical or biological indicators, and published inventories mix points, plumes, fields, carbonate structures, and active sediment patches~\cite{boetius2013,phrampus2020}.
 
-Ye et al.\ measured Fe-OC across stages of marine cold-seep development and estimated a mature-seep global stock~\cite{ye2026}. In Section 4.3 of their article, they apply an estimated global seep area of $2.05$--$3.15\times10^5$ km$^2$ to the average Fe-OC content in the upper 0--30 cm of mature-seep sediments. They cite Jiang et al.\ and Li et al.\ for the area and report approximately 142--218 Tg C~\cite{jiang2025,li2024}.
+Ye et al.\ measured Fe-OC across developmental stages of marine cold seeps and extrapolated an average mature-seep value through the upper 0--30 cm of a reported global seep area of $2.05$--$3.15\times10^5$ km$^2$~\cite{ye2026}. They obtained 142--218 Tg C and framed the calculation as a possible long-term mature-seep reservoir, assuming that early-stage seeps eventually evolve toward mature seeps. The area was cited to Jiang et al.\ and Li et al.~\cite{jiang2025,li2024}.
 
-Jiang et al.\ had reported the same $2.05$--$3.15\times10^5$ km$^2$ interval while jointly citing Boetius and Wenzh\"ofer and Li et al.~\cite{jiang2025,boetius2013,li2024}. The lower endpoint warrants a direct arithmetic check because Boetius and Wenzh\"ofer print both a continental-slope area of 41 million km$^2$ and an assumed active-seep occupation of approximately 0.05\%~\cite{boetius2013}. Their nominal product is 20,500 km$^2$, not 205,000 km$^2$.
+The numerical area warrants analysis for reasons broader than an exponent. Ye et al.'s Introduction also states that cold seeps cover less than 0.05\% of continental-slope area, citing Boetius and Wenzh\"ofer~\cite{ye2026,boetius2013}. Boetius and Wenzh\"ofer give approximately 41 million km$^2$ of continental slope and assume approximately 0.05\% occupation by active seep systems. Those premises imply approximately $2.05\times10^4$ km$^2$, one-tenth of the later lower value. Moreover, Jiang et al.'s two reported endpoints trace numerically to heterogeneous constructions, while no common interval-generating method is disclosed.
 
-We ask one question: what follows for Ye et al.'s corresponding stock endpoint if the nominal $2.05\times10^4$ km$^2$ product is substituted for the published $2.05\times10^5$ km$^2$ lower endpoint and all other terms are held fixed? We reconstruct the public source chain, test possible arithmetic and definitional alternatives, recalculate the adjacent mature-seep concentration from the public data, and evaluate the one-variable substitution. We distinguish throughout among a demonstrated incompatibility, a strong numerical-provenance inference, and an unobserved causal drafting history.
+We therefore ask four linked questions. Are the two area statements within Ye et al.\ mutually commensurate? Do the published endpoints define a scientific interval for a common global estimand? Does independent mapping support the scale or interpretation of either endpoint? And, once the spatial issue is separated from sediment mass and developmental stage, what can the published Fe-OC stock calculation defensibly represent? The objective is not to replace the reported span with another unsupported range. It is to identify which conclusions follow directly from the sources, which are supported interpretations, which calculations are conditional, and which global quantities remain unresolved.
 
 \section{Materials and methods}
 
-\subsection{Scope, sources, and evidence hierarchy}
+\subsection{Source set and analytical distinctions}
 
-The audit was limited to the numerical lineage used for the lower area in Ye et al.'s Fe-OC stock. Primary versions of record, publisher-hosted supporting information, and author-deposited source data were prioritized. Sources and linked version records were checked through August 30, 2026.
+We used the versions of record and public supporting data for Boetius and Wenzh\"ofer, Jiang et al., Li et al., and Ye et al., together with primary literature on global slope masks, seep inventories, regional mapping, sediment physical properties, and seep succession~\cite{boetius2013,jiang2025,li2024,ye2026}. Sources and linked public records were checked through September 2, 2026.
 
-The immediate area premises were verified in Boetius and Wenzh\"ofer: 41 million km$^2$ on printed page 725 and approximately 0.05\% on printed page 731~\cite{boetius2013}. The first statement cites Levin and Sibuet~\cite{levin2012}; the occupation assumption has no adjacent citation marker. The reported interval and its jointly cited references were checked in Jiang et al.'s article, supporting information, Supplementary Data workbook, and Source Data workbook~\cite{jiang2025}. Li et al.'s construction was checked in its version of record~\cite{li2024}. Ye et al.'s area, stock endpoints, layer depth, and concentration were checked in the Wiley article and supporting information, while the source rows were obtained from the authors' public OSF data record~\cite{ye2026}.
+Four evidentiary categories were kept separate. A \emph{demonstrated result} follows from values or statements printed in the source record. A \emph{supported interpretation} combines those observations with an explicit scientific model or comparison. A \emph{conditional calculation} evaluates stated inputs while holding unmeasured terms fixed. An \emph{unresolved quantity} lacks the observations needed for estimation. This terminology is used to prevent a numerical reconstruction from being mistaken for a measurement of true global seep area or stock.
 
-We classified evidence into three levels:
-\begin{enumerate}[label=(\roman*),leftmargin=2.1em]
-\item \emph{demonstrated}: a number, citation, or use is present in the public source;
-\item \emph{strongly inferred}: distinctive numbers and citation context identify a plausible endpoint source;
-\item \emph{not demonstrated}: the private calculation direction, drafting step, or person that produced the exponent.
-\end{enumerate}
-Terms such as \emph{reported} and \emph{subsequently used} refer to publication-level evidence only.
+\subsection{Area reconstruction and commensurability tests}
 
-\subsection{Nominal lower-area arithmetic and rescue tests}
-
-Boetius and Wenzh\"ofer report that continental slopes cover approximately 41 million km$^2$ and assume that active seep systems occupy approximately 0.05\% of that area~\cite{boetius2013}. Converting the printed percentage gives
+For the top-down construction, the printed occupation percentage converts to
 \begin{equation}
-0.05\%=\frac{0.05}{100}=0.0005=5\times10^{-4}.
-\label{eq:percent}
+0.05\% = 5\times10^{-4},
 \end{equation}
-The nominal product is
+and the nominal area is
 \begin{equation}
-41{,}000{,}000\ \mathrm{km^2}\times0.0005
+A_{\mathrm{slope}}=
+41{,}000{,}000\ \mathrm{km^2}\times5\times10^{-4}
 =20{,}500\ \mathrm{km^2}
 =2.05\times10^4\ \mathrm{km^2}.
-\label{eq:area}
+\label{eq:slope}
 \end{equation}
+Holding the 41-million-km$^2$ domain fixed, 205,000 km$^2$ requires 0.5\% occupation. Holding 0.05\% fixed requires 410 million km$^2$ of slope. These inverse calculations test the scale of the disagreement without assuming how it arose.
 
-We tested the inverse conditions needed to produce 205,000 km$^2$. Holding 41 million km$^2$ fixed requires 0.5\%, holding 0.05\% fixed requires 410 million km$^2$, and otherwise an unreported factor of ten is required. The inspected articles, supplements, workbooks, repositories, and version records were searched for an alternative percentage, denominator, area-class conversion, active-to-total multiplier, unit conversion, or correction notice.
-
-Jiang et al.\ also express their reported endpoints as approximately 0.057--0.087\% of global marine area~\cite{jiang2025}. We inverted those percentages to test whether they document an independent lower-end derivation. They imply denominators of approximately 359.65 and 362.07 million km$^2$, respectively. This is algebraically consistent with dividing the reported area endpoints by an approximately 360--362-million-km$^2$ marine domain. It does not document calculation direction or connect the 0.05\% continental-slope premise to 205,000 km$^2$.
-
-\subsection{Heterogeneous endpoint constructions}
-
-Jiang et al.\ print $2.05$--$3.15\times10^5$ km$^2$ and jointly cite Boetius and Wenzh\"ofer and Li et al., but provide neither an equation nor endpoint-specific citations~\cite{jiang2025}. Li et al.\ state that the active seep area at Haima is approximately 350 km$^2$ and that more than 900 cold seeps had been found globally~\cite{li2024}. Evaluating their extrapolation at a nominal count of 900 gives
+For the upper numerical fingerprint, Li et al.\ state that the Haima active seep area is approximately 350 km$^2$, that more than 900 cold seeps had been found globally, and that other seeps were assumed to have areas comparable to Haima~\cite{li2024}. Evaluated at the nominal count 900,
 \begin{equation}
+A_{\mathrm{Haima}}=
 350\ \mathrm{km^2}\times900
 =315{,}000\ \mathrm{km^2}
 =3.15\times10^5\ \mathrm{km^2}.
-\label{eq:li}
+\label{eq:haima}
 \end{equation}
-Because the area is approximate and the global count is stated as more than 900, this is a nominal numerical fingerprint matching Jiang et al.'s reported upper endpoint, not an empirical upper bound.
+Because the count is explicitly greater than 900, Equation~\eqref{eq:haima} is a numerical fingerprint rather than an upper bound.
 
-The two identifiable constructions are heterogeneous. They may differ in the spatial object called a seep or seep system, active patch versus broader field footprint, geographical completeness, clustering and overlap, and the representativeness of Haima. They are not confidence limits generated by one method. Table~\ref{tab:area-constructions} records the comparison used in this audit.
+We assessed whether the two constructions shared: (i) an estimand; (ii) a spatial unit; (iii) an activity and developmental-stage definition; (iv) a sampling frame and completeness model; and (v) an uncertainty-generating procedure. A pair was not treated as an interval merely because its values could be ordered.
+
+\subsection{Independent area context}
+
+Independent context was drawn from three bodies of published evidence. First, a global geomorphic map assigns 19,606,260 km$^2$ to continental slope, compared with the broader approximately 40--41-million-km$^2$ depth-defined margin or slope domain in the source chain~\cite{harris2014,menot2010,boetius2013}. Applying the same 0.05\% assumption to the geomorphic mask gives 9,803 km$^2$. This is a denominator-definition sensitivity, not a confidence interval for seep area.
+
+Second, we compared global and regional occurrence inventories. The SEAFLEA compilation contains more than 10,000 fluid-expulsion anomalies but is not a census of cold seeps: it is presence-only, incomplete, geographically biased, and deliberately combines current and recent-past indicators of several types~\cite{phrampus2020}. Regional acoustic surveys report plumes or flares rather than active-sediment polygons. Skarke et al.\ detected approximately 570 plumes in 94,000 km$^2$ of the northern U.S.\ Atlantic margin and, using the upper-slope subset under stated geological and thermal conditions, conditionally suggested that tens of thousands of seeps could be discoverable on passive margins~\cite{skarke2014}. Serov et al.\ mapped 21,703 flares in a 4,892-km$^2$ Barents Sea hydrocarbon-leakage region~\cite{serov2024}. We used these observations to test transferability of a global count or density, not to estimate area.
+
+Third, we examined the spatial object represented by Haima. Yao et al.\ repeat a literature descriptor of a 618-km$^2$ field containing a 350-km$^2$ area reported as active; they did not derive that polygon~\cite{yao2022}. Xu et al.\ framed the field-wide scale of seepage activity as poorly known; their 17 high-resolution dives observed at least six individual community and/or carbonate-mound patches~\cite{xu2020}. These scales are not interchangeable with a globally enumerated point called a "seep."
+
+We also considered whether global methane budgets could independently constrain area. Ocean-to-atmosphere methane transfer depends strongly on release depth, bubble properties, dissolution, and oxidation; deep-seep methane commonly fails to reach the atmosphere~\cite{weber2019}. Without a representative distribution of footprint-specific seabed flux and water-column transfer, an atmospheric or oceanic methane budget cannot be inverted to active-sediment area.
+
+\subsection{Fe-OC concentration, sediment mass, and stock sensitivity}
+
+Ye et al.\ report mature-seep Fe-OC content of $0.14\pm0.06\%$ of sediment dry mass~\cite{ye2026}. We recalculated arithmetic means and sample standard deviations from the public source rows. The current-study mature block contains 14 depth-interval rows; the historical mature block contains eight rows from Hu et al.~\cite{hu2025}. The pooled 22-row calculation was used only to reproduce the printed summary. Because the rows are depth intervals rather than 22 independent sites, we also compared the two source-block means with equal weight and did not interpret either calculation as a globally representative estimator.
+
+For area $A$ in km$^2$, depth $z$ in m, dry bulk density $\rho_d$ in g cm$^{-3}$, and Fe-OC content $c$ in percent of sediment dry mass, dimensional mass balance gives
+\begin{equation}
+M_{\mathrm{Tg}} =
+A z \rho_d \frac{c}{100}.
+\label{eq:stock}
+\end{equation}
+The powers of ten from km$^2$ to m$^2$, g cm$^{-3}$ to g m$^{-3}$, and g to Tg cancel in this compact expression. Since $c$ is defined per unit dry sediment mass, the commensurate physical coefficient is dry solid mass per unit bulk volume, not saturated bulk density.
+
+Ye et al.\ disclose $A$, $z=0.30$ m, and $c=0.14\%$, but the article, supporting information, and public source files do not state the stock equation or the coefficient used to convert sediment volume into dry sediment mass. Reverse-engineering the rounded endpoints yields an endpoint-compatible effective coefficient near 1.65 g cm$^{-3}$. This is an algebraic reconstruction only: it does not establish the coefficient's physical definition, provenance, or exact unrounded value, and it does not show that Ye et al.\ selected 1.65 as either dry or saturated bulk density.
+
+We evaluated conditional stocks at three coefficients: 0.9 g cm$^{-3}$, the mean dry bulk density measured in a Qiongdongnan core and applied by Chen et al.\ to a seep-influenced core approximately 35 km away; 1.3 g cm$^{-3}$, the dry-density assumption used in the Jiang and Li studies; and the endpoint-compatible 1.65 g cm$^{-3}$~\cite{chen2024,jiang2025,li2024}. These comparators are not a probability distribution and are not measurements of Ye et al.'s 0--30-cm samples.
+
+As a physical diagnostic, the two-phase relation
+\begin{equation}
+\rho_d=\rho_g(1-\phi)
+\label{eq:porosity}
+\end{equation}
+links dry bulk density to grain density $\rho_g$ and porosity $\phi$. Riedel et al.\ measured a mean grain density near 2.70 g cm$^{-3}$ at a hydrate-margin analog~\cite{riedel2006}. As a conditional diagnostic, if the endpoint-compatible effective coefficient were interpreted as dry bulk density, setting $\rho_d=1.65$ g cm$^{-3}$ would imply $\phi=0.389$. We compared that diagnostic with regional and hydrate-margin literature while retaining lithology, cementation, shell content, and burial depth as limitations~\cite{tang2025,huang2022}.
+
+Finally, the lower-area substitution was evaluated without selecting a density:
+\begin{equation}
+M_{\mathrm{conditional}}
+=142\ \mathrm{Tg\ C}\times
+\frac{20{,}500}{205{,}000}
+=14.2\ \mathrm{Tg\ C}.
+\label{eq:substitution}
+\end{equation}
+If both published whole-Tg endpoints were produced by one area-linear coefficient and rounded conventionally, their joint coefficient interval gives a corrected lower result of $[14.1548,14.2198)$ Tg C. Thus the approximate 14.2 value is robust to endpoint rounding but remains conditional on the published non-area terms.
+
+\subsection{Developmental-stage domain}
+
+Let $A_a$ denote the current area of all active seeps, $A_m$ the current area of active mature seeps, and $f_m=A_m/A_a$. If the footprint classified as currently active and mature is nested within a consistently delineated current-active footprint, a current mature-only stock is
+\begin{equation}
+M_m=c_m A_m K=c_m f_m A_a K,
+\end{equation}
+where $K$ contains depth and sediment mass per unit area. Holding $c_m$ and $K$ fixed, substituting $A_a$ for $A_m$ multiplies the mature-only result by $1/f_m$; this is upward if $0<f_m<1$ and unchanged if $f_m=1$. For an area-only comparison of stock across all active stages that also holds $K$ fixed across stages,
+\begin{equation}
+M_a=\bar c_a A_a K,
+\qquad
+\widehat M_a=c_m A_a K,
+\end{equation}
+so the sign of the difference depends on $c_m-\bar c_a$. Without a common $K$, it also depends on stage-specific sediment mass per unit area. Ye et al.'s stated eventual-mature scenario is a third estimand and requires the additional, untested equality $A_{\mathrm{future},m}=A_{\mathrm{current},a}$. These three targets were evaluated separately.
+
+\section{Results}
+
+\subsection{Ye et al. contain an unresolved area-scale inconsistency}
+
+Ye et al.'s statement that cold seeps occupy less than 0.05\% of continental-slope area corresponds to less than 20,500 km$^2$ when paired with the 41-million-km$^2$ domain in the cited source. Section 4.3 nevertheless applies 205,000--315,000 km$^2$. Expressed on the same 41-million-km$^2$ domain, those values equal 0.500\% and 0.768\%, respectively: 10.0 and 15.4 times the 0.05\% premise. Under Ye et al.'s strict "less than" wording, the lower disagreement is greater than tenfold.
+
+No spatial-domain or seep-category conversion is supplied between the two statements. The comparison does not establish that Ye et al.\ calculated 205,000 km$^2$ directly from the 0.05\% premise; they cite Jiang et al.\ and Li et al.\ for the later value. It demonstrates an unreconciled within-article scale and domain inconsistency. A materially broader object could in principle occupy a larger area, but that object and its conversion would need to be defined.
+
+\subsection{The reported span is not shown to derive from a common interval-generating method}
+
+Jiang et al.\ print $2.05$--$3.15\times10^5$ km$^2$ while jointly citing Boetius and Wenzh\"ofer and Li et al., without endpoint-specific derivations~\cite{jiang2025}. The lower mantissa matches Equation~\eqref{eq:slope} while its exponent is one power of ten larger. Equation~\eqref{eq:haima} matches the upper value at a nominal count of 900. This source association is a strong numerical-provenance interpretation rather than explicit endpoint citation syntax. No common interval-generating method is disclosed in Jiang et al.\ or in the cited source passages.
 
 \begin{table}[tbp]
-\caption{Heterogeneous nominal constructions associated with Jiang et al.'s reported area endpoints.}
-\label{tab:area-constructions}
+\caption{The two identifiable constructions associated with the reported global cold-seep area span.}
+\label{tab:area}
 \centering
 \small
-\begin{tabularx}{\textwidth}{@{}L{0.18\textwidth}L{0.27\textwidth}L{0.20\textwidth}Y@{}}
+\begin{tabularx}{\textwidth}{@{}L{0.17\textwidth}L{0.27\textwidth}L{0.18\textwidth}Y@{}}
 \toprule
-Construction & Spatial object and stage & Nominal rule & Evidentiary status \\
+Feature & Slope-occupation construction & Haima-count construction & Consequence \\
 \midrule
-Boetius--Wenzh\"ofer nominal product &
-Continental-slope area occupied by active seep systems &
-41 million km$^2$ times approximately 0.05\% &
-Identifiable lower-end premises; not a validated lower confidence bound \\
+Method &
+Continental-slope domain multiplied by assumed active-seep occupation &
+One field-scale area multiplied by a global discovery count &
+Top-down and bottom-up scalings are not shown to share an estimator \\
 \addlinespace
-Li-aligned nominal product &
-Haima active-seep area extrapolated across a nominal global seep count; representativeness assumed &
-Approximately 350 km$^2$ times nominal 900 &
-Fingerprint matching Jiang et al.'s reported upper endpoint; not an empirical upper bound \\
+Nominal inputs &
+41 million km$^2$ and approximately 0.05\% &
+Approximately 350 km$^2$ and more than 900 seeps &
+Inputs represent different spatial objects, units of analysis, and sampling frames \\
+\addlinespace
+Nominal output &
+$2.05\times10^4$ km$^2$ &
+$3.15\times10^5$ km$^2$ at exactly 900 &
+The printed $2.05\times10^5$ lower value is not generated by the first premises \\
+\addlinespace
+Bound status &
+Assumed occupation scenario; not a lower confidence limit &
+At exactly 900 the nominal product is $3.15\times10^5$ km$^2$; a count stated as greater than 900 cannot make that value an upper limit &
+The ordered pair has no disclosed statistical coverage interpretation \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\subsection{Recalculation and weighting sensitivity of the Fe-OC input}
-
-Ye et al.\ report mature-seep Fe-OC content of $0.14\pm0.06\%$ immediately before their stock calculation~\cite{ye2026}. The public source file contains two relevant blocks. The current-study block has 14 depth-interval rows: seven depths from each of two station profiles. Station labels differ between the official supporting table and the OSF source file, but the values and two-profile structure coincide. The historical block has eight mature-seep rows, all attributed to Hu et al.~\cite{hu2025}: one PC01-20 row and seven ROV5 depth-coded rows.
-
-For each block and their pooled 22 rows, we calculated the arithmetic mean and sample standard deviation,
-\begin{equation}
-\bar{x}=\frac{1}{n}\sum_{i=1}^{n}x_i,
-\qquad
-s=\left(\frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n-1}\right)^{1/2}.
-\label{eq:mean-sd}
-\end{equation}
-These are depth-interval rows, not 22 independent studies or globally representative sites. The pooled calculation was retained only to calculate a row-weighted arithmetic mean and compare it numerically with the value printed by Ye et al.\ The public files do not disclose the authors' aggregation rule.
-
-As a descriptive weighting sensitivity, we also gave equal weight to the current-study block mean and the Hu et al.\ block mean. A formal site-equal analysis was not performed because Table S7 does not define independent sites, cores, or replicates. An operational parsing of PC01 and ROV5 identifiers was retained only in the machine-readable supplement and is not treated as a site-level estimate.
-
-The source tables report Fe-OC content, $c$, as a percentage of sediment dry mass. This quantity is distinct from $f_{\mathrm{Fe\mbox{-}OC}}$, the percentage of total organic carbon associated with iron reported in a separate column by Ye et al.~\cite{ye2026}. Only the dry-sediment Fe-OC mass percentage is used here.
-
-\subsection{Primary one-variable endpoint substitution}
-
-Ye et al.'s description applies the same concentration and 0--30 cm layer to the endpoints of one reported area interval~\cite{ye2026}. Under that fixed area-linear mapping, replacing only the lower area gives
-\begin{equation}
-M_{\mathrm{cf}}
-=M_{\mathrm{published}}
-\frac{A_{\mathrm{nominal}}}{A_{\mathrm{reported}}}
-=142\ \mathrm{Tg\ C}\times\frac{20{,}500}{205{,}000}
-=14.2\ \mathrm{Tg\ C}.
-\label{eq:primary}
-\end{equation}
-This proportional substitution is the principal result. It does not require the undisclosed physical decomposition of the non-area terms.
-
-\subsection{Secondary consistency checks}
-
-First, we represented the reported area-linear calculation as
-\begin{equation}
-M=kA,
-\label{eq:linear}
-\end{equation}
-where $k$ contains all non-area terms. If 205,000 and 315,000 km$^2$ were the actual computational inputs, both endpoints used one common $k$, no endpoint-specific concentration, thickness, or mass term was used, and 142 and 218 Tg C were rounded conventionally to the nearest whole Tg, then
-\begin{equation}
-141.5\le205{,}000k<142.5,
-\qquad
-217.5\le315{,}000k<218.5.
-\label{eq:rounding}
-\end{equation}
-Intersecting these conditions and evaluating $20,500k$ gives a nominal endpoint-rounding consistency interval. It is not a scientific uncertainty interval.
-
-Second, for an area $A$ in km$^2$, layer thickness $z$ in m, endpoint-compatible effective sediment-mass coefficient $\rho_{\mathrm{eff}}$ in g cm$^{-3}$, and Fe-OC content $c$ in percent of sediment dry mass, the dimensional identity is
-\begin{equation}
-M_{\mathrm{Tg}}
-=A(10^6)z\rho_{\mathrm{eff}}(10^6)\frac{c}{100}(10^{-12})
-=Az\rho_{\mathrm{eff}}\frac{c}{100}.
-\label{eq:dimensional}
-\end{equation}
-Ye et al.\ disclose $A$, $z=0.30$ m, and $c=0.14\%$, but not the stock equation or sediment-mass coefficient. We therefore use $\rho_{\mathrm{eff}}=1.65$ g cm$^{-3}$ only as a reverse-engineered, nonunique, endpoint-compatible coefficient. It is not attributed to Ye et al.\ and is unnecessary to Equation~\eqref{eq:primary}.
-
-\section{Results}
-
-\subsection{The printed nominal premises give the factor-of-ten result}
-
-Equation~\eqref{eq:area} is the direct product of the two values printed by Boetius and Wenzh\"ofer. Jiang et al.'s reported lower endpoint, $2.05\times10^5$ km$^2$, is exactly ten times that nominal product. None of the tested alternatives generated $2.05\times10^5$ km$^2$ from the printed 41-million-km$^2$ and 0.05\% premises.
-
-The required 0.5\% occupation fraction is not printed by Boetius and Wenzh\"ofer. The required 410-million-km$^2$ denominator is not their continental-slope area and exceeds the approximately 360--362-million-km$^2$ marine domain implied by Jiang et al.'s accompanying percentages. No additional factor of ten or physical-area unit conversion was located. Because both source premises are approximate, 20,500 km$^2$ is a nominal product rather than four-significant-digit ecological knowledge; approximation cannot reconcile a full order-of-magnitude difference while both printed operands are retained.
-
-\subsection{The publication record supports an incompatibility and a qualified transmission inference}
-
-The lower mantissa 2.05 matches Equation~\eqref{eq:area}, while Jiang et al.'s exponent is one power of ten larger. Within the same jointly cited pair, Equation~\eqref{eq:li} matches the reported $3.15\times10^5$ km$^2$ upper endpoint. No other endpoint derivation was found in Jiang et al.'s article, supporting information, Supplementary Data, or Source Data.
-
-These facts demonstrate that the reported lower endpoint is incompatible with the identifiable lower-end premises in the cited pair. The mantissa, exponent, joint citation, and negative search are consistent with factor-of-ten transmission, but the public record does not prove calculation direction, an exact drafting step, or individual responsibility. Jiang et al.'s 0.057--0.087\% statement is algebraically compatible with their reported endpoints but does not provide an independently documented derivation.
-
-Ye et al.\ separately cite Boetius and Wenzh\"ofer for the statement that cold seeps cover less than 0.05\% of slope area~\cite{ye2026,boetius2013}. Later, they use the $2.05$--$3.15\times10^5$ km$^2$ interval cited to Jiang et al.\ and Li et al. Their article therefore establishes subsequent use of the same published value, not the origin of its exponent.
+The two constructions differ in spatial object, sampling frame, inventory completeness, clustering, overlap, and uncertainty structure, and are not shown to share an activity definition or representative target population (Table~\ref{tab:area}). Consequently, changing the lower exponent alone would not show that the resulting $2.05\times10^4$--$3.15\times10^5$ km$^2$ pair is a valid interval. It would pair a corrected nominal product with an incommensurate extrapolation.
 
 \begin{figure}[tbp]
 \centering
 \begin{tikzpicture}[
   >=Latex,
-  node distance=8mm,
-  box/.style={draw, align=left, inner sep=6pt, text width=0.79\textwidth, font=\small}
+  box/.style={draw, rounded corners=2pt, align=left, inner sep=6pt,
+              text width=0.36\textwidth, font=\small},
+  wide/.style={draw, rounded corners=2pt, align=left, inner sep=6pt,
+               text width=0.79\textwidth, font=\small}
 ]
-\node[box] (bw) {\textbf{Boetius and Wenzh\"ofer: printed nominal premises}\\
-41 million km$^2$ of continental slope; approximately 0.05\% occupied by active seep systems.};
-\node[box, below=of bw] (arith) {\textbf{Direct arithmetic}\\
-$41{,}000{,}000\times0.0005=20{,}500$ km$^2=2.05\times10^4$ km$^2$.};
-\node[box, below=of arith] (jiang) {\textbf{Jiang et al.: reported endpoints}\\
-$2.05$--$3.15\times10^5$ km$^2$; joint citations and no endpoint-specific derivation. A separate nominal $350$ km$^2\times900$ construction in jointly cited Li et al. matches the reported upper endpoint, but does not explain the lower endpoint.};
-\node[box, below=of jiang] (ye) {\textbf{Ye et al.: documented subsequent use}\\
-The same reported area endpoints enter the published 142--218 Tg C calculation.};
-\node[box, below=of ye] (cf) {\textbf{Conditional one-variable substitution}\\
-Replace only 205,000 by the nominal 20,500 km$^2$: $142\times(20{,}500/205{,}000)=14.2$ Tg C.};
-
-\draw[->] (bw) -- (arith);
-\draw[dashed,->] (arith) -- node[right,font=\scriptsize,align=left]{lower-end numerical-\\provenance inference} (jiang);
-\draw[->] (jiang) -- node[right,font=\scriptsize]{documented use} (ye);
-\draw[->] (ye) -- (cf);
+\node[box] (slope) at (0,0) {\textbf{Top-down slope construction}\\
+$41\times10^6$ km$^2\times0.05\%=2.05\times10^4$ km$^2$.\\
+Assumed fraction of a broad slope domain.};
+\node[box] (haima) at (8.0,0) {\textbf{Bottom-up Haima construction}\\
+$350$ km$^2\times900=3.15\times10^5$ km$^2$.\\
+One field descriptor scaled by a discovery-limited count $>900$.};
+\node[wide] (reported) at (4.0,-3.0) {\textbf{Reported as $2.05$--$3.15\times10^5$ km$^2$}\\
+The first premises do not generate the lower exponent; under the identifiable construction, the second fingerprint cannot be an upper bound. The constructions are not shown to estimate the same operationally defined footprint by a common method.};
+\node[wide] (ye) at (4.0,-5.5) {\textbf{Use in Ye et al.}\\
+The Introduction states $<0.05\%$ of slope area, while Section 4.3 applies the reported numerical span to mature-seep Fe-OC. No domain or stage conversion reconciles those uses.};
+\draw[->] (slope.south) -- (reported.north west);
+\draw[->] (haima.south) -- (reported.north east);
+\draw[->] (reported) -- (ye);
 \end{tikzpicture}
-\caption{Publication-level numerical chain. Solid arrows denote direct arithmetic, documented subsequent use, or the stated conditional operation. The dashed arrow marks the lower-end source inference from the distinctive numerical fingerprint; it does not claim access to private drafting history. The final value is a conditional area substitution, not a global-stock estimate.}
-\label{fig:chain}
+\caption{Two heterogeneous area constructions and their downstream use. The arrows show the numerical and citation relationships evaluated here; source association is based on joint citation and numerical fingerprints. The central scientific problem is lack of a disclosed common operational estimand and interval-generating method.}
+\label{fig:constructions}
 \end{figure}
 
-\subsection{The public rows yield a row-weighted match to the reported Fe-OC input}
+\subsection{Independent evidence does not calibrate a global active-seep area}
 
-The 14 current-study depth rows sum to 1.52\%, with mean 0.108571\% and row sample SD 0.024133\%. The eight Hu et al.\ rows sum to 1.56\%, with mean 0.195000\% and row sample SD 0.055806\%. The historical block mean is approximately 80\% higher than the current-study block mean.
+The slope denominator itself is definition-sensitive. Applying 0.05\% to the 19.606-million-km$^2$ geomorphic slope mask gives approximately 9,803 km$^2$, whereas applying it to 41 million km$^2$ gives 20,500 km$^2$. Both remain on the order of $10^4$ km$^2$. Conversely, 205,000--315,000 km$^2$ require 0.50--0.77\% occupation of the 41-million-km$^2$ domain or 1.05--1.61\% of the geomorphic slope mask. Those are materially different occupation hypotheses, not uncertainty generated by the printed 0.05\% assumption.
 
-Pooling all 22 depth-interval rows gives mean 0.140000\% and row sample SD 0.056653\%, which round to the $0.14\pm0.06\%$ printed by Ye et al. This row-weighted arithmetic calculation numerically reproduces the reported value; the public files do not establish that it was the authors' aggregation rule. The $\pm0.06\%$ value is a sample SD across rows, not a standard error, confidence interval, between-site uncertainty, or propagated stock uncertainty.
+The independent literature therefore supports two qualitative conclusions: fluid-expulsion occurrence compilations are incomplete, and observed densities and spatial objects are highly heterogeneous (Table~\ref{tab:context}). It does not select 20,500, 205,000, or 315,000 km$^2$ as a measured global area. In particular, a growing discovery count cannot be converted to area without a defined footprint distribution, sampling design, treatment of overlapping features, and activity time window.
 
-Equal weighting of the two source-study means gives 0.151786\%, 8.42\% above the row-pooled value. Table~\ref{tab:concentration} reports this as a descriptive sensitivity, not a replacement global concentration. Analytical comparability, row independence, and global representativeness are not established. Under any fixed concentration and other area-linear terms, however, replacing 205,000 by 20,500 km$^2$ still divides the corresponding stock endpoint by exactly ten.
-
-\begin{table}[tbp]
-\caption{Source-row structure and descriptive weighting sensitivity for mature-seep Fe-OC content.}
-\label{tab:concentration}
-\centering
+\begin{center}
+\begin{minipage}{\textwidth}
+\captionsetup{hypcap=false}
+\captionof{table}{Independent observations constrain occurrence and heterogeneity but not global active-sediment area.}
+\label{tab:context}
 \small
-\begin{tabularx}{\textwidth}{@{}L{0.25\textwidth}L{0.24\textwidth}L{0.18\textwidth}Y@{}}
+\begin{tabularx}{\textwidth}{@{}L{0.23\textwidth}L{0.27\textwidth}Y@{}}
 \toprule
-Calculation & Source structure & Mean Fe-OC (\%) & Interpretation \\
+Observation & Spatial object & Relevance to global area \\
 \midrule
-Current-study block &
-14 depth rows; two station profiles, seven depths each &
-0.108571 &
-Row SD 0.024133\% \\
+Global SEAFLEA compilation: $>10{,}000$ anomalies, not a cold-seep count~\cite{phrampus2020} &
+Presence-only mixture of plumes, pockmarks, hardgrounds, communities, and other current or recent-past indicators &
+Demonstrates inventory incompleteness and object mixing; encounter probability is not fractional active-sediment cover \\
 \addlinespace
-Hu et al.\ historical block &
-Eight rows; one PC01-20 row and seven ROV5 depth-coded rows &
-0.195000 &
-Row SD 0.055806\% \\
+Northern U.S.\ Atlantic: $\sim570$ plumes in 94,000 km$^2$~\cite{skarke2014} &
+Acoustic water-column plumes in a systematic regional survey &
+Supports many undiscovered occurrences; does not measure the footprint of sediment influenced by each plume \\
 \addlinespace
-Row-weighted pooling &
-All 22 depth rows &
-0.140000 &
-Row SD 0.056653\%; numerically matches the reported $0.14\pm0.06\%$ \\
+Northern Norwegian Barents Sea: 21,703 flares in 4,892 km$^2$~\cite{serov2024} &
+Acoustic flares in a hydrocarbon-leakage region containing an intense hotspot &
+Raw density is over 700 times the U.S.\ Atlantic value; geology, survey design, and definitions prevent global transfer \\
 \addlinespace
-Source-study-equal sensitivity &
-Equal weight to the two block means &
-0.151786 &
-Descriptive weighting check; not a meta-analysis \\
+Haima field: literature-reported 350-km$^2$ active descriptor and at least six dive-observed community and/or carbonate-mound patches~\cite{yao2022,xu2020} &
+Field-scale descriptor versus discrete biological and carbonate observations &
+Shows why multiplying one field descriptor by a point count mixes units of analysis \\
 \bottomrule
 \end{tabularx}
-\end{table}
+\end{minipage}
+\end{center}
 
-\subsection{The one-variable substitution changes the corresponding endpoint to approximately 14.2 Tg C}
+\subsection{The concentration is reproducible, but the sediment-mass coefficient is not disclosed}
 
-Equation~\eqref{eq:primary} gives the central numerical consequence directly:
-\[
-142\ \mathrm{Tg\ C}\times\frac{20{,}500}{205{,}000}
-=14.2\ \mathrm{Tg\ C}.
-\]
-If Jiang et al.'s reported upper endpoint is retained unchanged, the two displayed stock endpoints would become a heterogeneous, model-conditioned span of approximately 14.2--218 Tg C. That span is not a confidence interval or uncertainty interval and has no statistical coverage interpretation.
+The 14 current-study mature depth rows have mean 0.108571\% and sample SD 0.024133\%; the eight Hu et al.\ mature rows have mean 0.195000\% and sample SD 0.055806\%. Pooling all 22 rows yields $0.140000\pm0.056653\%$, which rounds to Ye et al.'s $0.14\pm0.06\%$. Equal weighting of the two source-block means gives 0.151786\%. The numerical match shows that the printed concentration can be reproduced by row pooling, but the public files do not specify that aggregation rule and the rows are not independent global sampling units.
 
-The two printed stock-to-area ratios are
-\[
-\frac{142}{205{,}000}=0.000692683,
-\qquad
-\frac{218}{315{,}000}=0.000692063
-\quad\mathrm{Tg\ C\ km^{-2}}.
-\]
-They differ by approximately 0.09\% relative to their mean, which is compatible with one common area-linear coefficient followed by whole-Tg reporting.
+The current-study early-stage rows have mean $0.164286\pm0.041542\%$, compared with $0.108571\pm0.024133\%$ for the current-study mature rows. These local data do not estimate global stage means, but they show that a higher mature-stage concentration cannot be assumed when determining the sign of a stage-substitution bias.
 
-Under all four assumptions stated before Equation~\eqref{eq:rounding}, the common coefficient satisfies
-\[
-0.000690476\le k<0.000693651
-\quad\mathrm{Tg\ C\ km^{-2}},
-\]
-and the substituted endpoint satisfies
-\begin{equation}
-14.15\le M_{\mathrm{cf}}<14.22\ \mathrm{Tg\ C}.
-\label{eq:rounding-result}
-\end{equation}
-This is a nominal endpoint-rounding consistency interval. Its narrow width reflects compatibility with two rounded display values only; it does not represent ecological, sampling, area, sediment-mass, or model uncertainty. Full-precision bounds are retained in the reproducibility record.
+With $A$, $z$, and $c$ fixed at the published values, an effective coefficient near 1.65 g cm$^{-3}$ reproduces both whole-Tg stock endpoints. Interpreted as dry bulk density, it implies porosity 0.389 at the 2.70-g-cm$^{-3}$ mean grain density measured by Riedel et al. That is lower than the approximately 0.55--0.75 near-surface porosities reported from the same hydrate-margin study, and lower than the 0.65 porosity assumed in Haima flux calculations~\cite{riedel2006,tang2025}. Chen et al.'s regional mean dry bulk density of 0.9 g cm$^{-3}$ was measured outside the seep and averaged over a longer core before being applied to a seep-influenced core 35 km away; it is context rather than a replacement measurement~\cite{chen2024}. Conversely, a Haima hydrate-reservoir study reports a calculated porosity of 0.40 without sampling depth or raw physical-property values, providing a regional counterexample to treating 0.40 as impossible while not establishing that value for the upper 30 cm~\cite{huang2022}.
 
-Finally, Equation~\eqref{eq:dimensional} with $z=0.30$ m, $c=0.14\%$, and the endpoint-compatible $\rho_{\mathrm{eff}}=1.65$ g cm$^{-3}$ gives
-\[
-205{,}000\times0.30\times1.65\times\frac{0.14}{100}
-=142.065\ \mathrm{Tg\ C},
-\]
-\[
-315{,}000\times0.30\times1.65\times\frac{0.14}{100}
-=218.295\ \mathrm{Tg\ C},
-\]
-and
-\[
-20{,}500\times0.30\times1.65\times\frac{0.14}{100}
-=14.2065\ \mathrm{Tg\ C}.
-\]
-This secondary check shows dimensional compatibility with the displayed endpoints. It does not recover an author-reported coefficient or validate its physical interpretation.
+\begin{center}
+\begin{minipage}{\textwidth}
+\captionsetup{hypcap=false}
+\captionof{table}{Conditional Fe-OC stock sensitivity to the sediment-mass coefficient. All rows hold depth at 0.30 m and Fe-OC content at 0.14\%.}
+\label{tab:density}
+\small
+\begin{tabularx}{\textwidth}{@{}L{0.27\textwidth}C{0.12\textwidth}C{0.16\textwidth}C{0.16\textwidth}Z@{}}
+\toprule
+Coefficient context & \shortstack{$\rho_{\mathrm{eff}}$\\(g cm$^{-3}$)} & 20,500 km$^2$ (Tg C) & 205,000 km$^2$ (Tg C) & 315,000 km$^2$ (Tg C) \\
+\midrule
+Regional dry-density comparator~\cite{chen2024} & 0.9 & 7.75 & 77.49 & 119.07 \\
+Dry-density assumption used by Jiang and Li~\cite{jiang2025,li2024} & 1.3 & 11.19 & 111.93 & 171.99 \\
+Endpoint-compatible effective value & 1.65 & 14.21 & 142.07 & 218.30 \\
+\bottomrule
+\end{tabularx}
+\end{minipage}
+\end{center}
+
+Table~\ref{tab:density} is a sensitivity analysis, not a set of confidence limits. No cited value is a globally representative measurement for the upper 30 cm of mature seep sediment. The defensible result is that the physical basis of the absolute mass conversion is undisclosed and consequential; neither endpoint agreement nor the physical diagnostics identifies the coefficient as dry or saturated bulk density, and a specific density error is not demonstrated.
+
+\subsection{The developmental-stage effect depends on the target quantity}
+
+Ye et al.'s mature sampling sites were actively seeping, and the succession framework they cite describes mature, mussel-bearing communities as persisting while methane flux continues~\cite{ye2026,bowden2013}. This nesting is a conditional, set-theoretic relation within a consistently delineated current-active footprint; it does not show that independently published "mature" and "active" areas use the same activity criterion or spatial boundary. Under that condition, if the target is a \emph{current mature-only} stock, substituting total active area for mature area multiplies the result by $1/f_m$ while $c_m$ and $K$ are held fixed. The substitution is upward if $0<f_m<1$ and unchanged if $f_m=1$; the global mature fraction $f_m$ is unknown.
+
+That directional result does not extend to two other targets. For a \emph{current stock across all active stages}, the sign depends on the area-weighted stage concentrations only if depth and sediment mass per unit area are held fixed; otherwise it also depends on stage-specific sediment-mass coefficients. Ye et al.'s current-study early-stage mean exceeds its mature-stage mean. For Ye et al.'s stated \emph{eventual-mature scenario}, using present active area requires the untested assumption that the active footprint is conserved as systems mature. Expansion, contraction, cessation, displacement, and unequal stage duration leave the direction unresolved. A stage-commensurate spatial basis is therefore not established; the bias is conditional on the target estimand and is not unconditionally upward.
 
 \section{Discussion}
 
-\subsection{Demonstrated arithmetic versus inferred causal history}
+\subsection{The central result is not an arithmetic replacement}
 
-This analysis is a provenance correction, not a new global-area or stock estimate. The demonstrated result is simple: the two nominal values printed by Boetius and Wenzh\"ofer multiply to $2.05\times10^4$ km$^2$, while Jiang et al.\ report $2.05\times10^5$ km$^2$ without an endpoint-specific derivation. Ye et al.\ subsequently use that reported value in their area-linear stock calculation.
+Equation~\eqref{eq:slope} establishes that the printed 41-million-km$^2$ and 0.05\% premises yield $2.05\times10^4$ km$^2$. The same order-of-magnitude conflict is visible within Ye et al.\ itself, independently of any reconstruction of how Jiang et al.'s exponent arose. This makes the inconsistency a scientific result about the stated spatial domain, not merely a comment on citation history.
 
-A causal account of how the exponent entered the literature is a stronger proposition. The matching mantissa, one-power exponent shift, joint citation, and absence of another public derivation are consistent with factor-of-ten transmission from the identifiable lower-end premises. They do not exclude an undocumented source, private calculation, or drafting transformation. Accordingly, the manuscript does not say that Ye et al.\ created the inconsistency or that a named Jiang et al.\ author performed an incorrect multiplication.
+More importantly, the reported endpoints are not shown by the disclosed record to define a valid global interval. The lower-source construction is a fraction of a broad slope domain. The upper numerical fingerprint treats one field-scale descriptor as representative of every discovered seep. Correcting one exponent while retaining the other endpoint would preserve the deeper problem. Neither $2.05$--$3.15\times10^5$ km$^2$ nor $2.05\times10^4$--$3.15\times10^5$ km$^2$ is supported by the disclosed record as lower and upper bounds on simultaneously active cold-seep sediment.
 
-\subsection{What the 14.2 Tg C endpoint means}
+Independent observations strengthen this conclusion rather than resolving it. They show many unrecorded or variably detected seep indicators, enormous regional heterogeneity, and non-equivalence among points, plumes, fields, and habitat patches. They do not provide a representative distribution of active-sediment footprints from which global coverage can be estimated. The current evidence supports an order-of-magnitude conditional statement: the printed 0.05\% assumption produces an area on the order of $10^4$ km$^2$ under two published denominator or domain definitions, whereas areas on the order of $10^5$ km$^2$ require a materially different occupation hypothesis. It does not establish that either scale is the true global area.
 
-Approximately 14.2 Tg C is the result of one controlled substitution in the published area-linear mapping. It is not a validated lower bound on the true global mature-seep Fe-OC stock. That stronger interpretation would require, among other things, a defensible global seep-area model, a globally representative concentration, a disclosed sediment-mass coefficient, a uniform or otherwise modeled depth, and commensurability between the area and observation domains.
+\subsection{Consequences for the Fe-OC stock}
 
-The last condition is unresolved in the present record. Boetius and Wenzh\"ofer's area premise concerns \emph{active seep systems}, whereas Ye et al.'s concentration is assigned to a \emph{mature} developmental stage. Their spatial and developmental categories have not been shown to be commensurate. The endpoint substitution therefore corrects an arithmetic input under the inherited calculation but does not repair the conceptual basis of the global upscaling.
+The 14.2-Tg result remains useful, but only for a precise purpose. It shows the consequence of changing one area input by a factor of ten while preserving the published area-linear mapping. It is not a corrected global lower bound because 20,500 km$^2$ is itself the output of an assumed occupation fraction and because the 315,000-km$^2$ value is not supported as a commensurate upper limit. The density-independent rounding analysis confirms the arithmetic consequence; it does not validate the underlying area.
 
-Likewise, the two area endpoints are heterogeneous nominal constructions rather than statistical bounds. Li et al.'s wording \emph{more than 900} does not generate an empirical upper bound at 900, and the representativeness of the Haima area is outside this audit. Retaining 218 Tg C only holds the reported upper endpoint fixed; it does not validate it.
+The dry-density analysis adds a separate limitation to absolute stock magnitude. Because Fe-OC is expressed per dry sediment mass, the stock calculation requires a coefficient that converts bulk sediment volume into dry sediment mass; in Equation~\eqref{eq:stock}, that coefficient is dry bulk density. The need to define it can be illustrated without attributing a method to Ye et al.: at porosity 0.65, grain density 2.70 g cm$^{-3}$, and porewater density 1.024 g cm$^{-3}$, the two-phase relations give a dry bulk density of 0.945 g cm$^{-3}$ and a saturated bulk density of 1.61 g cm$^{-3}$. These are different physical quantities, and substituting saturated density for dry bulk density would include porewater mass in an inventory defined per unit dry sediment mass. Although 1.61 is numerically near the endpoint-compatible effective coefficient of 1.65 g cm$^{-3}$, proximity alone does not identify the coefficient's provenance or physical meaning and is not evidence that Ye et al.\ used saturated density. Cementation, shell content, grain-size distribution, compaction, rounding, or other undisclosed mass terms could also affect the effective value. This dimensional diagnostic demonstrates why the stock equation and the coefficient's definition, value, source, and aggregation must be disclosed; it supports an unresolved mass-conversion method, not a wet-versus-dry attribution.
 
-\subsection{Why the unresolved gaps do not rescue the arithmetic}
+The stage analysis similarly changes interpretation rather than producing a correction factor. A current mature-only inventory requires the global mature fraction of active area. An all-active inventory requires stage-specific stock per unit area, including concentration and sediment-mass coefficients. A future mature scenario requires a dynamic model of footprint persistence and stage duration. None of those quantities is supplied by a stage-unspecific global area.
 
-Boetius and Wenzh\"ofer cite Levin and Sibuet for the 41-million-km$^2$ continental-slope statement~\cite{boetius2013,levin2012}. The exact sentence-level route remains unresolved. Menot et al.\ report an approximately 40-million-km$^2$ deep-margin domain and corroborate the scale, but cannot be assigned as the exact source~\cite{menot2010}. This bibliographic gap does not alter the product of the two values Boetius and Wenzh\"ofer themselves print. A 205,000-km$^2$ result at 0.05\% requires 410 million km$^2$; at 41 million km$^2$, it requires 0.5\%.
+\subsection{Requirements for a defensible global estimate}
 
-Ye et al.\ do not disclose the exact stock equation or sediment-mass coefficient. This prevents a fully source-disclosed physical reconstruction and is why 1.65 g cm$^{-3}$ remains a nonunique effective coefficient. It cannot rescue the lower area because any otherwise fixed area-linear mapping changes by exactly the same factor as area. Equation~\eqref{eq:primary} therefore does not depend on knowing the physical decomposition of $k$.
+A defensible global seep-area estimate would first define the mapping unit: active sediment patch, biological community, acoustic vent, carbonate field, or broader geologic system. It would define an activity window and developmental stage; use a survey design that models detection and unsurveyed regions; estimate a distribution of footprint sizes rather than applying one exemplar; and treat overlap and clustering explicitly. A stock estimate would then pair that area with stage-matched Fe-OC concentrations, sample-matched dry bulk density, layer thickness, and a transparent aggregation model.
 
-\subsection{Corrective and prepublication value}
-
-A transparent published correction could state the nominal product of the Boetius--Wenzh\"ofer premises, identify the heterogeneous sources associated with the two reported endpoints, and disclose the full Ye et al.\ stock equation and sediment-mass coefficient. These steps would make the numerical chain independently evaluable without changing Ye et al.'s underlying measurements.
-
-The negative source search is necessarily bounded. Before publication, the reproducibility archive should be deposited in a persistent, versioned repository, and the corresponding authors of Jiang et al.\ and Ye et al.\ should be invited to clarify the endpoint derivation and stock coefficient. No author clarification had been obtained by the version date. A documented alternative source could change the provenance interpretation, but not Equation~\eqref{eq:area}.
+These requirements do not weaken Ye et al.'s sediment observations. The public rows reproduce their central concentration summary, and the developmental comparison remains scientifically informative. The unresolved step is the transition from local, depth-resolved observations to a global spatial inventory. Until a common estimand and sampling model are disclosed and supported, global Fe-OC storage should be reported as scenario-dependent sensitivity rather than as a bounded stock.
 
 \section{Limitations}
 
-\begin{enumerate}[label=(\roman*),leftmargin=2.1em]
-\item The ultimate Levin-to-Boetius ancestry of the 41-million-km$^2$ denominator remains unresolved. The analysis multiplies the premises printed by Boetius and Wenzh\"ofer and does not claim an original derivation.
+This study does not produce new global seep mapping and cannot estimate true active-seep area. Jiang et al.\ do not assign individual citations to individual endpoints, so the endpoint-source mapping rests on distinctive numerical fingerprints and citation context, although the lack of a disclosed common interval method is independent of that mapping. Regional occurrence surveys use different instruments, thresholds, clustering rules, and geological settings; their raw densities demonstrate heterogeneity but are not mutually calibrated.
 
-\item Jiang et al.\ jointly cite Boetius and Wenzh\"ofer and Li et al.\ without assigning individual endpoints. The endpoint-source mapping is a strong numerical-provenance inference, not explicit citation syntax.
+The density comparators are not measurements of Ye et al.'s sampled upper 30 cm. Porosity and dry bulk density vary with lithology, carbonate cementation, shells, organic matter, coring disturbance, salt correction, and depth, and neither the analog comparison nor the wet-versus-dry diagnostic identifies the coefficient used by Ye et al.\ The pooled Fe-OC reconstruction weights depth rows, and the public data do not define globally representative sites or a published aggregation rule. Finally, no global stage-resolved area data establish $f_m$ or future footprint persistence. These limitations leave the absolute global area and stock unresolved while preserving the demonstrated arithmetic and the supported commensurability and reporting conclusions.
 
-\item Jiang et al.'s marine-area percentages are algebraically compatible with their reported endpoints, but the public record does not establish whether areas or percentages were calculated first.
-
-\item Ye et al.\ do not publish their exact stock equation or sediment-mass coefficient. The 1.65 g cm$^{-3}$ value is an endpoint-compatible, reverse-engineered coefficient and is not necessary to the primary proportional result.
-
-\item The 22 Fe-OC rows are depth intervals, not independent global sites. The pooled SD is not between-site uncertainty. Analytical comparability and global representativeness are unestablished, and Table S7 does not support a formal site-equal analysis.
-
-\item The active-seep-system area premise has not been shown to be commensurate with Ye et al.'s mature-seep observations. The one-variable result is consequently not an ecological lower bound.
-
-\item The two area endpoints arise from heterogeneous nominal constructions. Neither the area pair nor the corresponding 14.2--218 Tg C display should be interpreted as a confidence or uncertainty interval.
-
-\item The nominal endpoint-rounding consistency interval assumes exact computational use of the displayed areas, one common coefficient, no endpoint-specific non-area terms, and nearest-whole-Tg rounding. It measures display compatibility only.
-
-\item The bounded negative search cannot exclude private sources or future corrections. The current supplement lacks a persistent public DOI, and no author clarification has yet been sought.
-\end{enumerate}
+As normal scientific due diligence before submission, the corresponding authors of Jiang et al.\ should be invited to clarify the derivation, operational area definition, endpoint attribution, and intended interval interpretation of the reported area span; the corresponding authors of Ye et al.\ should be invited to clarify their use of that area and the stock equation and sediment-mass coefficient used to obtain 142--218 Tg C. Any documented clarification received before submission should be incorporated or reported transparently; the present analysis relies only on the published record.
 
 \section{Conclusion}
 
-The nominal values printed by Boetius and Wenzh\"ofer -- 41 million km$^2$ and approximately 0.05\% -- yield $2.05\times10^4$ km$^2$. Jiang et al.\ report $2.05\times10^5$ km$^2$ without an endpoint-specific derivation, and Ye et al.\ subsequently use that published value in an area-linear Fe-OC stock calculation. Substituting the nominal $2.05\times10^4$ km$^2$ value while leaving all other terms unchanged changes the corresponding published endpoint from approximately 142 to approximately 14.2 Tg C. The publication record demonstrates the numerical incompatibility and is consistent with factor-of-ten citation-chain transmission, but does not independently prove its private causal history. This is a conditional arithmetic substitution to a published endpoint, not an estimate of the true global cold-seep area or Fe-OC stock.
+The strongest findings are two linked spatial-upscaling problems. Ye et al.\ contain an unreconciled order-of-magnitude inconsistency between a stated $<0.05\%$ occupation of continental-slope area and the $2.05$--$3.15\times10^5$ km$^2$ area later applied. The identifiable source premises numerically associate that span with a slope-occupation calculation and a single-field--times--site-count extrapolation; the disclosed record does not show that its endpoints are lower and upper bounds from a common estimator.
+
+Independent compilations and regional surveys indicate that seep indicators are widespread, incompletely observed, and highly heterogeneous, but they do not validate a global active-sediment area. The Fe-OC concentration can be reproduced from public rows, whereas the sediment-mass coefficient needed for the absolute stock is undisclosed. The endpoint-compatible effective value would be high relative to available shallow-sediment context if interpreted as dry bulk density, but the published record does not identify it as dry or saturated bulk density. Developmental stage introduces a further target-domain requirement: under a nested current mature-only model, area substitution cannot bias the result downward and is upward only when $f_m<1$; for all-active or eventual-mature targets, its direction remains unresolved.
+
+Replacing 205,000 by the nominal 20,500-km$^2$ product changes the corresponding 142-Tg endpoint to approximately 14.2 Tg C. That result is a robust conditional sensitivity, not a new global lower bound. The published record does not support interval interpretation of the area pair; the resulting global Fe-OC stock remains unresolved until area, stage, and sediment mass are estimated on commensurate bases.
 
 \section{Data and code availability}
 
-Ye et al.'s underlying Fe-OC source data are publicly available at \url{https://osf.io/6ymra}~\cite{ye2026}. This repository includes \path{Reproducibility_Supplement.zip}, which contains the required extracted rows, executable calculations, machine-readable outputs, verification tests, and source-value record. Source locators, access dates, and checksums are documented in the repository. Third-party articles and supplemental files are linked rather than redistributed.
-
-For journal submission, the supplement should be cited from a versioned repository with a persistent identifier. No new observational data were generated.
+The numerical reconstructions, source-derived tables, source-value record, and executable tests are distributed with this manuscript and in the accompanying repository. The retained scripts reproduce the area arithmetic, Fe-OC row summaries, denominator sensitivity, density sensitivity, endpoint-rounding bounds, and stage-domain formulas using only the Python standard library. Third-party publications are linked by DOI rather than redistributed.
 
 \begin{thebibliography}{99}
 \small
@@ -387,6 +351,28 @@ Seafloor oxygen consumption fuelled by methane from cold seeps,
 \href{https://doi.org/10.1038/ngeo1926}
 {\nolinkurl{https://doi.org/10.1038/ngeo1926}}.
 
+\bibitem{bowden2013}
+D. A. Bowden, A. A. Rowden, A. R. Thurber, A. R. Baco, L. A. Levin, and C. R. Smith,
+Cold seep epifaunal communities on the Hikurangi Margin, New Zealand:
+Composition, succession, and vulnerability to human activities,
+\emph{PLOS ONE} \textbf{8} (2013), e76869.
+\href{https://doi.org/10.1371/journal.pone.0076869}
+{\nolinkurl{https://doi.org/10.1371/journal.pone.0076869}}.
+
+\bibitem{chen2024}
+Y. Chen, L. Dong, W. Sui, M. Niu, X. Cui, K.-U. Hinrichs, and F. Wang,
+Cycling and persistence of iron-bound organic carbon in subseafloor sediments,
+\emph{Nature Communications} \textbf{15} (2024), Article 6370.
+\href{https://doi.org/10.1038/s41467-024-50578-5}
+{\nolinkurl{https://doi.org/10.1038/s41467-024-50578-5}}.
+
+\bibitem{harris2014}
+P. T. Harris, M. Macmillan-Lawler, J. Rupp, and E. K. Baker,
+Geomorphology of the oceans,
+\emph{Marine Geology} \textbf{352} (2014), 4--24.
+\href{https://doi.org/10.1016/j.margeo.2014.01.011}
+{\nolinkurl{https://doi.org/10.1016/j.margeo.2014.01.011}}.
+
 \bibitem{hu2025}
 Y. Hu, K. Li, J. C. Faust, J. Peckmann, D. Zhang, L. Chen, Q. Liang,
 D. Chen, and D. Feng,
@@ -396,19 +382,20 @@ Insights from methane-seep sediments,
 \href{https://doi.org/10.1029/2024GL112119}
 {\nolinkurl{https://doi.org/10.1029/2024GL112119}}.
 
+\bibitem{huang2022}
+Y. Huang, J.-C. Feng, Y. Xie, Y. Wang, P. Li, and M. Zhang,
+Phase equilibrium characteristics of natural gas hydrate formation at the deep-water
+environment of "Haima" cold seep,
+\emph{Energy Reports} \textbf{8} (2022), 5501--5509.
+\href{https://doi.org/10.1016/j.egyr.2022.04.011}
+{\nolinkurl{https://doi.org/10.1016/j.egyr.2022.04.011}}.
+
 \bibitem{jiang2025}
 Q. Jiang, L. Cao, Y. Han, et al.,
 Cold seeps are potential hotspots of deep-sea nitrogen loss driven by microorganisms across 21 phyla,
 \emph{Nature Communications} \textbf{16} (2025), Article 1646.
 \href{https://doi.org/10.1038/s41467-025-56774-1}
 {\nolinkurl{https://doi.org/10.1038/s41467-025-56774-1}}.
-
-\bibitem{levin2012}
-L. A. Levin and M. Sibuet,
-Understanding continental margin biodiversity: A new imperative,
-\emph{Annual Review of Marine Science} \textbf{4} (2012), 79--112.
-\href{https://doi.org/10.1146/annurev-marine-120709-142714}
-{\nolinkurl{https://doi.org/10.1146/annurev-marine-120709-142714}}.
 
 \bibitem{li2024}
 J. Li, X. Dong, Y. Tang, et al.,
@@ -424,6 +411,69 @@ in A. D. McIntyre (ed.), \emph{Life in the World's Oceans: Diversity,
 Distribution and Abundance}, Wiley-Blackwell, 2010, pp. 79--102.
 \href{https://doi.org/10.1002/9781444325508.ch5}
 {\nolinkurl{https://doi.org/10.1002/9781444325508.ch5}}.
+
+\bibitem{phrampus2020}
+B. J. Phrampus, T. R. Lee, and W. T. Wood,
+A global probabilistic prediction of cold seeps and associated SEAfloor FLuid
+Expulsion Anomalies (SEAFLEAs),
+\emph{Geochemistry, Geophysics, Geosystems} \textbf{21} (2020), e2019GC008747.
+\href{https://doi.org/10.1029/2019GC008747}
+{\nolinkurl{https://doi.org/10.1029/2019GC008747}}.
+
+\bibitem{riedel2006}
+M. Riedel, P. Long, C.-S. Liu, P. Schultheiss, T. Collett, and the ODP Leg 204
+Shipboard Scientific Party,
+Physical properties of near-surface sediments at southern Hydrate Ridge:
+Results from ODP Leg 204,
+\emph{Proceedings of the Ocean Drilling Program, Scientific Results} \textbf{204}
+(2006), 1--29.
+\href{https://doi.org/10.2973/odp.proc.sr.204.104.2006}
+{\nolinkurl{https://doi.org/10.2973/odp.proc.sr.204.104.2006}}.
+
+\bibitem{serov2024}
+P. Serov, K. Andreassen, M. Winsborrow, R. Mattingsdal, and H. Patton,
+Geological and glaciological controls of 21,700 active methane seeps in the
+northern Norwegian Barents Sea,
+\emph{Frontiers in Earth Science} \textbf{12} (2024), 1404027.
+\href{https://doi.org/10.3389/feart.2024.1404027}
+{\nolinkurl{https://doi.org/10.3389/feart.2024.1404027}}.
+
+\bibitem{skarke2014}
+A. Skarke, C. Ruppel, M. Kodis, D. Brothers, and E. Lobecker,
+Widespread methane leakage from the sea floor on the northern U.S.\ Atlantic margin,
+\emph{Nature Geoscience} \textbf{7} (2014), 657--661.
+\href{https://doi.org/10.1038/ngeo2232}
+{\nolinkurl{https://doi.org/10.1038/ngeo2232}}.
+
+\bibitem{tang2025}
+L. Tang, J.-C. Feng, C.-R. Li, X. Chen, H. Zhang, and S. Zhang,
+Distribution and potential drivers of methane emissions from deep-sea environments
+in Haima cold seep areas,
+\emph{Frontiers in Marine Science} \textbf{12} (2025), 1714180.
+\href{https://doi.org/10.3389/fmars.2025.1714180}
+{\nolinkurl{https://doi.org/10.3389/fmars.2025.1714180}}.
+
+\bibitem{weber2019}
+T. Weber, N. A. Wiseman, and A. Kock,
+Global ocean methane emissions dominated by shallow coastal waters,
+\emph{Nature Communications} \textbf{10} (2019), Article 4584.
+\href{https://doi.org/10.1038/s41467-019-12541-7}
+{\nolinkurl{https://doi.org/10.1038/s41467-019-12541-7}}.
+
+\bibitem{xu2020}
+H. Xu, M. Du, J. Li, et al.,
+Spatial distribution of seepages and associated biological communities within
+Haima cold seep field, South China Sea,
+\emph{Journal of Sea Research} \textbf{165} (2020), 101957.
+\href{https://doi.org/10.1016/j.seares.2020.101957}
+{\nolinkurl{https://doi.org/10.1016/j.seares.2020.101957}}.
+
+\bibitem{yao2022}
+G. Yao, H. Zhang, P. Xiong, H. Jia, Y. Shi, and M. He,
+Community characteristics and genetic diversity of macrobenthos in Haima cold seep,
+\emph{Frontiers in Marine Science} \textbf{9} (2022), 920327.
+\href{https://doi.org/10.3389/fmars.2022.920327}
+{\nolinkurl{https://doi.org/10.3389/fmars.2022.920327}}.
 
 \bibitem{ye2026}
 W. Ye, Y. Chen, C. Yang, et al.,

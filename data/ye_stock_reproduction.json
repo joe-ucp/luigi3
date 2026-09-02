@@ -71,11 +71,11 @@
     "mature_feoc_percent": "0.14"
   },
   "implicit_coefficient": {
-    "effective_dry_bulk_density_g_cm3": "1.65",
+    "endpoint_compatible_effective_sediment_mass_coefficient_g_cm3": "1.65",
     "status": "reverse-engineered; not stated in the Ye article, SI, or OSF source-data file",
-    "caution": "1.65 is an effective density (or algebraically equivalent sediment-mass coefficient); endpoint matching alone does not prove that the authors literally selected this density."
+    "caution": "The 1.65 g cm-3 value is an algebraically endpoint-compatible effective sediment-mass coefficient. Interpreting it as dry bulk density is conditional; endpoint matching neither establishes its physical identity nor proves that Ye et al. selected it."
   },
-  "unit_identity": "Tg C = area_km2 * 1e6 m2/km2 * depth_m * density_g_cm3 * 1e6 g/m3/(g/cm3) * FeOC_percent/100 * 1e-12 Tg/g",
+  "unit_identity": "Tg C = area_km2 * 1e6 m2/km2 * depth_m * sediment_mass_coefficient_g_cm3 * 1e6 g/m3/(g/cm3) * FeOC_percent/100 * 1e-12 Tg/g",
   "stock_results_tg": {
     "reconstruction_with_implicit_1p65_lower_tg": "142.065000",
     "reconstruction_with_implicit_1p65_upper_tg": "218.295000",
@@ -85,7 +85,7 @@
     "corrected_reconstruction_with_implicit_1p65_lower_3_sigfig": "14.2",
     "upper_unchanged_reconstruction_with_implicit_1p65_tg": "218.295000"
   },
-  "rounding_audit_density_g_cm3": {
+  "rounding_audit_effective_sediment_mass_coefficient_g_cm3": {
     "lower_endpoint_142_interval_half_open": [
       "1.643437862950058072009291521",
       "1.655052264808362369337979094"
@@ -99,11 +99,11 @@
       "1.651549508692365835222978080"
     ],
     "1_65_is_in_joint_interval": true,
-    "density_implied_by_exact_142": "1.649245063879210220673635308",
-    "density_implied_by_exact_218": "1.647770219198790627362055933"
+    "effective_coefficient_implied_by_exact_142": "1.649245063879210220673635308",
+    "effective_coefficient_implied_by_exact_218": "1.647770219198790627362055933"
   },
   "rounding_audit_area_coefficient_tg_per_km2": {
-    "coefficient_from_0_14pct_0_30m_and_1_65_g_cm3": "0.000693",
+    "coefficient_from_0_14pct_0_30m_and_1_65_effective_g_cm3": "0.000693",
     "joint_interval_that_rounds_to_both_published_endpoints": [
       "0.0006904761904761904761904761905",
       "0.0006936507936507936507936507937"

@@ -29,15 +29,34 @@ class YeReproductionTests(unittest.TestCase):
         self.assertEqual(round(statistics.stdev(combined), 2), 0.06)
 
     def test_published_endpoints_and_corrected_lower(self) -> None:
-        density = Decimal("1.65")
-        self.assertEqual(MODULE.stock_tg(Decimal("205000"), density), Decimal("142.065"))
-        self.assertEqual(MODULE.stock_tg(Decimal("315000"), density), Decimal("218.295"))
-        self.assertEqual(MODULE.stock_tg(Decimal("20500"), density), Decimal("14.2065"))
+        effective_coefficient = Decimal("1.65")
+        self.assertEqual(
+            MODULE.stock_tg(Decimal("205000"), effective_coefficient),
+            Decimal("142.065"),
+        )
+        self.assertEqual(
+            MODULE.stock_tg(Decimal("315000"), effective_coefficient),
+            Decimal("218.295"),
+        )
+        self.assertEqual(
+            MODULE.stock_tg(Decimal("20500"), effective_coefficient),
+            Decimal("14.2065"),
+        )
 
-    def test_1_65_density_is_compatible_with_both_rounded_endpoints(self) -> None:
+    def test_1_65_effective_coefficient_is_compatible_with_both_endpoints(self) -> None:
         result = MODULE.build_result(self.current_csv, self.literature_csv)
-        audit = result["rounding_audit_density_g_cm3"]
+        audit = result[
+            "rounding_audit_effective_sediment_mass_coefficient_g_cm3"
+        ]
         self.assertTrue(audit["1_65_is_in_joint_interval"])
+        implicit = result["implicit_coefficient"]
+        self.assertEqual(
+            implicit[
+                "endpoint_compatible_effective_sediment_mass_coefficient_g_cm3"
+            ],
+            "1.65",
+        )
+        self.assertNotIn("effective_dry_bulk_density_g_cm3", implicit)
 
     def test_profile_structure_and_weighting_sensitivity(self) -> None:
         result = MODULE.build_result(self.current_csv, self.literature_csv)
